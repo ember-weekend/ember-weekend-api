@@ -2,8 +2,15 @@ defmodule EmberWeekendApi.EpisodeControllerTest do
   use EmberWeekendApi.ConnCase
 
   alias EmberWeekendApi.Episode
-  @valid_attrs %{description: "some content", duration: "some content", filename: "some content", release_date: "2010-04-17", slug: "some content", title: "some content"}
-  @invalid_attrs %{}
+
+  @valid_attrs %{
+    title: "Anatomy Park",
+    description: "Rick and Morty try to save the life of a homeless man; Jerry's parents visit.",
+    slug: "anatomy-park",
+    release_date: %Ecto.Date{year: 2013, month: 12, day: 15},
+    filename: "s01e03",
+    duration: "1:00:00"
+  }
 
   setup %{conn: conn} do
     {:ok, conn: put_req_header(conn, "accept", "application/json")}
@@ -15,7 +22,7 @@ defmodule EmberWeekendApi.EpisodeControllerTest do
   end
 
   test "shows episode", %{conn: conn} do
-    episode = Repo.insert! %Episode{}
+    episode = Repo.insert! Map.merge(%Episode{}, @valid_attrs)
     conn = get conn, episode_path(conn, :show, episode)
     assert json_response(conn, 200)["data"] == %{"id" => Integer.to_string(episode.id),
       "type" => "episode",
@@ -23,7 +30,7 @@ defmodule EmberWeekendApi.EpisodeControllerTest do
         "title" => episode.title,
         "description" => episode.description,
         "slug" => episode.slug,
-        "release-date" => episode.release_date,
+        "release-date" => "2013-12-15",
         "filename" => episode.filename,
         "duration" => episode.duration
       }

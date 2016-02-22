@@ -12,8 +12,6 @@ config :logger, level: :warn
 # Configure your database
 config :ember_weekend_api, EmberWeekendApi.Repo,
   adapter: Ecto.Adapters.Postgres,
-  username: "postgres",
-  password: "postgres",
   database: "ember_weekend_api_test",
   hostname: "localhost",
   pool: Ecto.Adapters.SQL.Sandbox

@@ -50,7 +50,6 @@ defmodule EmberWeekendApi.Web do
       use Phoenix.HTML
 
       import EmberWeekendApi.Router.Helpers
-      import EmberWeekendApi.ErrorHelpers
       import EmberWeekendApi.Gettext
     end
   end

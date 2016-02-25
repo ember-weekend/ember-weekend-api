@@ -15,9 +15,9 @@ defmodule EmberWeekendApi.EpisodeController do
         conn
         |> put_status(:not_found)
         |> render_errors([errors: [%{
-              status: "404",
-              source: %{pointer: "/data/attributes/id"},
-              title: "Not Found",
+              status: 404,
+              source: %{pointer: "/id"},
+              title: "Not found",
               detail: "No episode found for the given id"}]])
       episode ->
         render(conn, data: episode)

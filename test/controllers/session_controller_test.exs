@@ -89,7 +89,9 @@ defmodule EmberWeekendApi.SessionControllerTest do
     error = json["errors"] |> List.first
 
     assert json["errors"] |> Enum.count == 1
-    assert error["title"] == "Invalid code"
+    assert error["status"] == 422
+    assert error["title"]  == "Failed to create session"
+    assert error["detail"] == "Invalid code"
 
     assert Repo.all(LinkedAccount) |> Enum.count == 0
     assert Repo.all(Session)       |> Enum.count == 0
@@ -115,6 +117,9 @@ defmodule EmberWeekendApi.SessionControllerTest do
     error = json["errors"] |> List.first
 
     assert json["errors"] |> Enum.count == 1
-    assert error["title"] == "Invalid token"
+
+    assert error["status"] == 404
+    assert error["title"]  == "Failed to delete session"
+    assert error["detail"] == "Invalid token"
   end
 end

@@ -24,7 +24,8 @@ defmodule EmberWeekendApi.EpisodeControllerTest do
   test "shows episode", %{conn: conn} do
     episode = Repo.insert! Map.merge(%Episode{}, @valid_attrs)
     conn = get conn, episode_path(conn, :show, episode)
-    assert json_response(conn, 200)["data"] == %{"id" => Integer.to_string(episode.id),
+    assert json_response(conn, 200)["data"] == %{
+      "id" => Integer.to_string(episode.id),
       "type" => "episode",
       "attributes" => %{
         "title" => episode.title,
@@ -37,12 +38,13 @@ defmodule EmberWeekendApi.EpisodeControllerTest do
     }
   end
 
-  test "does not show episode and instead throw error when id is nonexistent", %{conn: conn} do
+  test "throws error for invalid episode id", %{conn: conn} do
     conn = get conn, episode_path(conn, :show, -1)
-    assert json_response(conn, 404)["errors"] == [%{"title" => "Not Found",
-      "status" => "404",
+    assert json_response(conn, 404)["errors"] == [%{
+      "title" => "Not found",
+      "status" => 404,
       "source" => %{
-        "pointer" => "/data/attributes/id"
+        "pointer" => "/id"
       },
       "detail" => "No episode found for the given id"
     }]

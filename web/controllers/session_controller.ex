@@ -18,12 +18,16 @@ defmodule EmberWeekendApi.SessionController do
           {:error, errors} ->
             conn
             |> put_status(:unprocessable_entity)
-            |> render_errors(errors: errors)
+            |> render_errors([errors: errors, title: "Failed to create session"])
         end
       {:error, %{message: message}} ->
         conn
         |> put_status(:unprocessable_entity)
-        |> render_errors(errors: [application: message])
+        |> render_errors([errors: [%{
+              status: 422,
+              source: %{pointer: "/code"},
+              title: "Failed to create session",
+              detail: message}]])
     end
   end
 
@@ -32,7 +36,11 @@ defmodule EmberWeekendApi.SessionController do
       nil ->
         conn
         |> put_status(:not_found)
-        |> render_errors(errors: [token: "Invalid token"])
+        |> render_errors([errors: [%{
+              status: 404,
+              source: %{pointer: "/token"},
+              title: "Failed to delete session",
+              detail: "Invalid token"}]])
       session ->
         Repo.delete!(session)
         send_resp(conn, :no_content, "")

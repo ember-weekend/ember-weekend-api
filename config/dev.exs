@@ -38,3 +38,7 @@ config :ember_weekend_api, EmberWeekendApi.Repo,
   database: "ember_weekend_api_dev",
   hostname: "localhost",
   pool_size: 10
+
+config :ember_weekend_api, :github_api, EmberWeekendApi.Github.HTTPClient
+
+import_config "dev.secret.exs"

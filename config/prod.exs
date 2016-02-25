@@ -19,6 +19,8 @@ config :ember_weekend_api, EmberWeekendApi.Endpoint,
 # Do not print debug messages in production
 config :logger, level: :info
 
+config :ember_weekend_api, :github_api, EmberWeekendApi.Github.HTTPClient
+
 # ## SSL Support
 #
 # To get SSL working, you will need to add the `https` key

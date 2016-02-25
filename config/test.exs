@@ -15,3 +15,5 @@ config :ember_weekend_api, EmberWeekendApi.Repo,
   database: "ember_weekend_api_test",
   hostname: "localhost",
   pool: Ecto.Adapters.SQL.Sandbox
+
+config :ember_weekend_api, :github_api, EmberWeekendApi.Github.Stub

@@ -29,6 +29,13 @@ defmodule EmberWeekendApi.ConnCase do
 
       # The default endpoint for testing
       @endpoint EmberWeekendApi.Endpoint
+
+      require Logger
+
+      def log(thing) do
+        IO.puts "\n"
+        Logger.warn "\n\n#{inspect thing}\n"
+      end
     end
   end
 

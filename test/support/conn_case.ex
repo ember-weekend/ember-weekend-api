@@ -19,6 +19,8 @@ defmodule EmberWeekendApi.ConnCase do
     quote do
       # Import conveniences for testing with connections
       use Phoenix.ConnTest
+      alias Plug.Conn
+      require IEx
 
       alias EmberWeekendApi.Repo
       import Ecto
@@ -36,6 +38,19 @@ defmodule EmberWeekendApi.ConnCase do
         IO.puts "\n"
         Logger.warn "\n\n#{inspect thing}\n"
       end
+
+      def json_api_response(conn) do
+        case JSON.decode(conn.resp_body) do
+          {:ok, json} ->
+            case Conn.get_resp_header(conn, "content-type") do
+              [] -> {:error, "Content type was not 'application/vnd.api+json'"}
+              ["application/vnd.api+json"] -> json
+              ["application/vnd.api+json; charset=utf-8"] -> json
+            end
+          {:error, error} -> {:error, error}
+        end
+      end
+
     end
   end
 

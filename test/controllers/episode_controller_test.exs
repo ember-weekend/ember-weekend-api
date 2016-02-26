@@ -13,18 +13,23 @@ defmodule EmberWeekendApi.EpisodeControllerTest do
   }
 
   setup %{conn: conn} do
-    {:ok, conn: put_req_header(conn, "accept", "application/json")}
+    conn = conn
+    |> put_req_header("accept", "application/vnd.api+json")
+    |> put_req_header("content-type", "application/vnd.api+json")
+    {:ok, conn: conn}
   end
 
   test "lists all episodes on index", %{conn: conn} do
     conn = get conn, episode_path(conn, :index)
-    assert json_response(conn, 200)["data"] == []
+    assert conn.status == 200
+    assert json_api_response(conn)["data"] == []
   end
 
   test "shows episode", %{conn: conn} do
     episode = Repo.insert! Map.merge(%Episode{}, @valid_attrs)
     conn = get conn, episode_path(conn, :show, episode)
-    assert json_response(conn, 200)["data"] == %{
+    assert conn.status == 200
+    assert json_api_response(conn)["data"] == %{
       "id" => Integer.to_string(episode.id),
       "type" => "episode",
       "attributes" => %{
@@ -40,7 +45,8 @@ defmodule EmberWeekendApi.EpisodeControllerTest do
 
   test "throws error for invalid episode id", %{conn: conn} do
     conn = get conn, episode_path(conn, :show, -1)
-    assert json_response(conn, 404)["errors"] == [%{
+    assert conn.status == 404
+    assert json_api_response(conn)["errors"] == [%{
       "title" => "Not found",
       "status" => 404,
       "source" => %{

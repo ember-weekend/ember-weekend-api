@@ -1,6 +1,5 @@
 defmodule EmberWeekendApi.EpisodeController do
   use EmberWeekendApi.Web, :controller
-  import EmberWeekendApi.ErrorHandler
 
   alias EmberWeekendApi.Episode
 
@@ -14,11 +13,12 @@ defmodule EmberWeekendApi.EpisodeController do
       nil ->
         conn
         |> put_status(:not_found)
-        |> render_errors([errors: [%{
-              status: 404,
-              source: %{pointer: "/id"},
-              title: "Not found",
-              detail: "No episode found for the given id"}]])
+        |> render(:errors, data: %{
+          source: %{ pointer: "/id" },
+          status: 404,
+          title: "Not found",
+          detail: "No episode found for the given id"
+        })
       episode ->
         render(conn, data: episode)
     end

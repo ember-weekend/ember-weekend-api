@@ -1,33 +1,33 @@
 defmodule EmberWeekendApi.SessionController do
   use EmberWeekendApi.Web, :controller
-  import EmberWeekendApi.ErrorHandler
   alias EmberWeekendApi.User
   alias EmberWeekendApi.Session
   alias EmberWeekendApi.LinkedAccount
 
   @github_api Application.get_env(:ember_weekend_api, :github_api)
 
-  def create(conn, %{"provider" => "github", "code" => code, "state" => state}) do
+  def create(conn, %{"data" => %{"attributes" => %{"provider" => "github", "code" => code, "state" => state}}}) do
     case @github_api.get_access_token(code, state) do
       {:ok, %{access_token: access_token}} ->
         case create_session(access_token, "github") do
-          {:ok, %{user: user, session: session}} ->
+          {:ok, %{user: _, session: session}} ->
             conn
             |> put_status(:created)
-            |> json(%{user: %{name: user.name, username: user.username}, token: session.token})
+            |> render(:show, data: session)
           {:error, errors} ->
             conn
             |> put_status(:unprocessable_entity)
-            |> render_errors([errors: errors, title: "Failed to create session"])
+            |> render(:errors, data: errors)
         end
       {:error, %{message: message}} ->
         conn
         |> put_status(:unprocessable_entity)
-        |> render_errors([errors: [%{
-              status: 422,
-              source: %{pointer: "/code"},
-              title: "Failed to create session",
-              detail: message}]])
+        |> render(:errors, data: %{
+          source: %{ pointer: "/code" },
+          status: 422,
+          title: "Failed to create session",
+          detail: message
+        })
     end
   end
 
@@ -36,11 +36,12 @@ defmodule EmberWeekendApi.SessionController do
       nil ->
         conn
         |> put_status(:not_found)
-        |> render_errors([errors: [%{
-              status: 404,
-              source: %{pointer: "/token"},
-              title: "Failed to delete session",
-              detail: "Invalid token"}]])
+        |> render(:errors, data: %{
+          source: %{ pointer: "/token" },
+          status: 404,
+          title: "Failed to delete session",
+          detail: "Invalid token"
+        })
       session ->
         Repo.delete!(session)
         send_resp(conn, :no_content, "")

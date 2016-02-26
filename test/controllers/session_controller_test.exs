@@ -4,20 +4,39 @@ defmodule EmberWeekendApi.SessionControllerTest do
   alias EmberWeekendApi.Session
   alias EmberWeekendApi.LinkedAccount
 
-  @valid_params   %{provider: "github", code: "valid_code",   state: "123456"}
-  @invalid_params %{provider: "github", code: "invalid_code", state: "123456"}
+  @valid_params   %{
+    data: %{
+      attributes: %{
+        provider: "github", code: "valid_code", state: "123456"
+      }
+  }}
+  @invalid_params %{
+    data: %{
+      attributes: %{
+        provider: "github", code: "invalid_code", state: "123456"
+      }
+  }}
   @valid_linked   %{provider: "github", access_token: "valid_token", provider_id: "1"}
   @github_user    %{"name" => "Rick Sanchez", "username" => "tinyrick"}
 
   setup %{conn: conn} do
-    {:ok, conn: put_req_header(conn, "accept", "application/json")}
+    conn = conn
+      |> put_req_header("accept", "application/vnd.api+json")
+      |> put_req_header("content-type", "application/vnd.api+json")
+    {:ok, conn: conn}
   end
 
   test "if not present, creates a user for the github account", %{conn: conn} do
+
     conn = post conn, session_path(conn, :create), @valid_params
 
-    assert json_response(conn, 201)["token"]
-    assert json_response(conn, 201)["user"] == @github_user
+    assert conn.status == 201
+    assert json_api_response(conn)["data"]["attributes"]["token"]
+
+    included = json_api_response(conn)["included"] |> List.first
+
+    assert included["type"] == "user"
+    assert included["attributes"] == @github_user
 
     assert Repo.all(LinkedAccount) |> Enum.count == 1
     assert Repo.all(Session)       |> Enum.count == 1
@@ -45,8 +64,13 @@ defmodule EmberWeekendApi.SessionControllerTest do
 
     conn = post conn, session_path(conn, :create), @valid_params
 
-    assert json_response(conn, 201)["token"]
-    assert json_response(conn, 201)["user"] == @github_user
+    assert conn.status == 201
+    assert json_api_response(conn)["data"]["attributes"]["token"]
+
+    included = json_api_response(conn)["included"] |> List.first
+
+    assert included["type"] == "user"
+    assert included["attributes"] == @github_user
 
     assert Repo.all(LinkedAccount) |> Enum.count == 1
     assert Repo.all(Session)       |> Enum.count == 1
@@ -66,8 +90,13 @@ defmodule EmberWeekendApi.SessionControllerTest do
 
     conn = post conn, session_path(conn, :create), @valid_params
 
-    assert json_response(conn, 201)["token"]
-    assert json_response(conn, 201)["user"] == @github_user
+    assert conn.status == 201
+    assert json_api_response(conn)["data"]["attributes"]["token"]
+
+    included = json_api_response(conn)["included"] |> List.first
+
+    assert included["type"] == "user"
+    assert included["attributes"] == @github_user
 
     assert Repo.all(LinkedAccount) |> Enum.count == 1
     assert Repo.all(Session)       |> Enum.count == 1
@@ -85,7 +114,8 @@ defmodule EmberWeekendApi.SessionControllerTest do
   test "returns an error if the code is invalid", %{conn: conn} do
     conn = post conn, session_path(conn, :create), @invalid_params
 
-    json = json_response(conn, 422)
+    assert conn.status == 422
+    json = json_api_response(conn)
     error = json["errors"] |> List.first
 
     assert json["errors"] |> Enum.count == 1
@@ -99,21 +129,22 @@ defmodule EmberWeekendApi.SessionControllerTest do
   end
 
   test "signs out", %{conn: conn} do
-    token = "ABCDEFG"
+    token = "VALID"
     session = Repo.insert! %Session{ token: token}
 
     conn = delete conn, "/api/sessions/#{token}"
 
-    assert response(conn, 204)
+    assert conn.status == 204
     refute Repo.get(Session, session.id)
   end
 
   test "signs out unknown token", %{conn: conn} do
-    token = "ABCDEFG"
+    token = "INVALID"
 
     conn = delete conn, "/api/sessions/#{token}"
 
-    json = json_response(conn, 404)
+    assert conn.status == 404
+    json = json_api_response(conn)
     error = json["errors"] |> List.first
 
     assert json["errors"] |> Enum.count == 1

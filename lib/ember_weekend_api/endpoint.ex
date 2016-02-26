@@ -22,6 +22,7 @@ defmodule EmberWeekendApi.Endpoint do
   plug Plug.RequestId
   plug Plug.Logger
 
+  plug EmberWeekendApi.Plugs.URLFormat
   plug Plug.Parsers,
     parsers: [:urlencoded, :multipart, :json],
     pass: ["*/*"],

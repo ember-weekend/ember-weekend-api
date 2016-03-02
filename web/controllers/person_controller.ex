@@ -1,31 +1,31 @@
-defmodule EmberWeekendApi.EpisodeController do
+defmodule EmberWeekendApi.PersonController do
   use EmberWeekendApi.Web, :controller
   import EmberWeekendApi.Auth
   import EmberWeekendApi.ControllerErrors
-  alias EmberWeekendApi.Episode
+  alias EmberWeekendApi.Person
 
-  plug :model_name, :episode
+  plug :model_name, :person
   plug :authenticate, :admin when action in [:create, :update, :delete]
 
   def index(conn, _params) do
-    episodes = Repo.all(Episode)
-    render(conn, data: episodes)
+    people = Repo.all(Person)
+    render(conn, data: people)
   end
 
   def show(conn, %{"id" => id}) do
-    case Repo.get(Episode, id) do
+    case Repo.get(Person, id) do
       nil -> not_found(conn)
-      episode -> render(conn, data: episode)
+      person -> render(conn, data: person)
     end
   end
 
   def create(conn, %{"data" => data}) do
-    changeset = Episode.changeset(%Episode{}, data["attributes"])
+    changeset = Person.changeset(%Person{}, data["attributes"])
     case Repo.insert(changeset) do
-      {:ok, episode} ->
+      {:ok, person} ->
         conn
         |> put_status(:created)
-        |> render(:show, data: episode)
+        |> render(:show, data: person)
       {:error, changeset} ->
         conn
         |> put_status(:unprocessable_entity)
@@ -34,12 +34,12 @@ defmodule EmberWeekendApi.EpisodeController do
   end
 
   def update(conn, %{"data" => data, "id" => id}) do
-    case Repo.get(Episode, id) do
+    case Repo.get(Person, id) do
       nil -> not_found(conn)
-      episode ->
-        changeset = Episode.changeset(episode, data["attributes"])
+      person ->
+        changeset = Person.changeset(person, data["attributes"])
         case Repo.update(changeset) do
-          {:ok, episode} -> render(conn, :show, data: episode)
+          {:ok, person} -> render(conn, :show, data: person)
           {:error, changeset} ->
             conn
             |> put_status(:unprocessable_entity)
@@ -49,12 +49,11 @@ defmodule EmberWeekendApi.EpisodeController do
   end
 
   def delete(conn, %{"id" => id}) do
-    case Repo.get(Episode, id) do
+    case Repo.get(Person, id) do
       nil -> not_found(conn)
-      episode ->
-        Repo.delete!(episode)
+      person ->
+        Repo.delete!(person)
         send_resp(conn, :no_content, "")
     end
   end
-
 end

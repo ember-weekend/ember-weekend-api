@@ -11,13 +11,17 @@
 # and so on) as they will fail if something goes wrong.
 alias EmberWeekendApi.Repo
 alias EmberWeekendApi.Episode
+alias EmberWeekendApi.Person
+
+Repo.delete_all(Episode)
+Repo.delete_all(Person)
 
 [
   %Episode{
     title: "Pilot",
     description: "Rick moves in with his daughter's family and becomes a bad influence on his grandson, Morty.",
     slug: "pilot",
-    release_date: %Ecto.Date{year: 2013, month: 12, day: 2},
+    release_date: Timex.Date.from({2013, 12, 2}),
     filename: "s01e01",
     duration: "1:00:00"
   },
@@ -25,7 +29,7 @@ alias EmberWeekendApi.Episode
     title: "Lawnmower Dog",
     description: "Rick helps Jerry with the dog and incept Goldenfold.",
     slug: "lawnmower-dog",
-    release_date: %Ecto.Date{year: 2013, month: 12, day: 9},
+    release_date: Timex.Date.from({2013, 12, 9}),
     filename: "s01e02",
     duration: "1:00:00"
   },
@@ -33,8 +37,16 @@ alias EmberWeekendApi.Episode
     title: "Anatomy Park",
     description: "Rick and Morty try to save the life of a homeless man; Jerry's parents visit.",
     slug: "anatomy-park",
-    release_date: %Ecto.Date{year: 2013, month: 12, day: 15},
+    release_date: Timex.Date.from({2013, 12, 15}),
     filename: "s01e03",
     duration: "1:00:00"
+  }
+] |> Enum.each(&Repo.insert!(&1))
+
+[%Person{
+    name: "Jerry Smith",
+    handle: "dr_pluto",
+    url: "http://rickandmorty.wikia.com/wiki/Jerry_Smith",
+    avatar_url: "http://vignette3.wikia.nocookie.net/rickandmorty/images/5/5d/Jerry_S01E11_Sad.JPG/revision/latest?cb=20140501090439"
   }
 ] |> Enum.each(&Repo.insert!(&1))

@@ -1,18 +1,16 @@
-defmodule EmberWeekendApi.Episode do
+defmodule EmberWeekendApi.Person do
   use EmberWeekendApi.Web, :model
 
-  schema "episodes" do
-    field :title, :string
-    field :description, :string
-    field :slug, :string
-    field :release_date, Timex.Ecto.Date
-    field :filename, :string
-    field :duration, :string
+  schema "people" do
+    field :name, :string
+    field :handle, :string
+    field :url, :string
+    field :avatar_url, :string
 
     timestamps
   end
 
-  @required_fields ~w(title description slug release_date filename duration)
+  @required_fields ~w(name handle url avatar_url)
   @optional_fields ~w()
 
   @doc """

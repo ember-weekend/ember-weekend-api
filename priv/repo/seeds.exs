@@ -12,9 +12,11 @@
 alias EmberWeekendApi.Repo
 alias EmberWeekendApi.Episode
 alias EmberWeekendApi.Person
+alias EmberWeekendApi.Resource
 
 Repo.delete_all(Episode)
 Repo.delete_all(Person)
+Repo.delete_all(Resource)
 
 [
   %Episode{
@@ -48,5 +50,11 @@ Repo.delete_all(Person)
     handle: "dr_pluto",
     url: "http://rickandmorty.wikia.com/wiki/Jerry_Smith",
     avatar_url: "http://vignette3.wikia.nocookie.net/rickandmorty/images/5/5d/Jerry_S01E11_Sad.JPG/revision/latest?cb=20140501090439"
+  }
+] |> Enum.each(&Repo.insert!(&1))
+
+[%Resource{
+    title: "Plumbuses",
+    url: "http://rickandmorty.wikia.com/wiki/Plumbus"
   }
 ] |> Enum.each(&Repo.insert!(&1))

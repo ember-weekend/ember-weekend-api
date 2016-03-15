@@ -25,7 +25,8 @@ defmodule EmberWeekendApi.PersonControllerTest do
     assert conn.status == 200
     assert json_api_response(conn)["data"] == [%{
       "id" => "#{person.id}",
-      "type" => "person",
+      "type" => "people",
+      "links" => %{"self" => "/api/people/#{person.id}"},
       "attributes" => @valid_attrs
                     |> string_keys
                     |> dasherize_keys
@@ -40,7 +41,8 @@ defmodule EmberWeekendApi.PersonControllerTest do
     assert conn.status == 200
     assert json_api_response(conn)["data"] == %{
       "id" => "#{person.id}",
-      "type" => "person",
+      "type" => "people",
+      "links" => %{"self" => "/api/people/#{person.id}"},
       "attributes" => @valid_attrs
                     |> string_keys
                     |> dasherize_keys
@@ -81,7 +83,7 @@ defmodule EmberWeekendApi.PersonControllerTest do
     conn = authenticated(conn)
     attributes = @valid_attrs
       |> dasherize_keys
-    data = %{data: %{type: "person", attributes: attributes}}
+    data = %{data: %{type: "people", attributes: attributes}}
 
     conn = post conn, person_path(conn, :create, data)
 
@@ -89,7 +91,8 @@ defmodule EmberWeekendApi.PersonControllerTest do
     person_id = String.to_integer json_api_response(conn)["data"]["id"]
     assert json_api_response(conn)["data"] == %{
       "id" => "#{person_id}",
-      "type" => "person",
+      "type" => "people",
+      "links" => %{"self" => "/api/people/#{person_id}"},
       "attributes" => string_keys(attributes)
     }
     assert Repo.all(Person) |> Enum.count == 1
@@ -100,7 +103,7 @@ defmodule EmberWeekendApi.PersonControllerTest do
     conn = authenticated(conn)
     person = Repo.insert! Map.merge(%Person{}, @valid_attrs)
     attributes = %{name: "Better Name"}
-    data = %{data: %{id: "#{person.id}", type: "person", attributes: attributes}}
+    data = %{data: %{id: "#{person.id}", type: "people", attributes: attributes}}
 
     conn = put conn, person_path(conn, :update, person, data)
 
@@ -113,7 +116,7 @@ defmodule EmberWeekendApi.PersonControllerTest do
 
   test "authenticated user sees validation messages when creating person", %{conn: conn} do
     conn = authenticated(conn)
-    data = %{data: %{type: "person", attributes: @invalid_attrs}}
+    data = %{data: %{type: "people", attributes: @invalid_attrs}}
 
     conn = post conn, person_path(conn, :create), data
 
@@ -129,7 +132,7 @@ defmodule EmberWeekendApi.PersonControllerTest do
   test "authenticated user sees validation messages when updating person", %{conn: conn} do
     conn = authenticated(conn)
     person = Repo.insert! Map.merge(%Person{}, @valid_attrs)
-    data = %{data: %{id: "#{person.id}", type: "person", attributes: %{"name" => nil}}}
+    data = %{data: %{id: "#{person.id}", type: "people", attributes: %{"name" => nil}}}
 
     conn = put conn, person_path(conn, :update, person), data
 

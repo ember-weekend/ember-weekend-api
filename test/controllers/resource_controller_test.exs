@@ -1,6 +1,8 @@
 defmodule EmberWeekendApi.ResourceControllerTest do
   use EmberWeekendApi.ConnCase
   alias EmberWeekendApi.Resource
+  alias EmberWeekendApi.Person
+  alias EmberWeekendApi.ResourceAuthor
 
   @valid_attrs %{
     title: "Plumbuses",
@@ -8,6 +10,13 @@ defmodule EmberWeekendApi.ResourceControllerTest do
   }
 
   @invalid_attrs %{}
+
+  @valid_person_attrs %{
+    name: "Jerry Smith",
+    handle: "dr_pluto",
+    url: "http://rickandmorty.wikia.com/wiki/Jerry_Smith",
+    avatar_url: "http://vignette3.wikia.nocookie.net/rickandmorty/images/5/5d/Jerry_S01E11_Sad.JPG/revision/latest?cb=20140501090439"
+  }
 
   setup %{conn: conn} do
     conn = conn
@@ -17,7 +26,10 @@ defmodule EmberWeekendApi.ResourceControllerTest do
   end
 
   test "lists all resources on index", %{conn: conn} do
+    person = Repo.insert! Map.merge(%Person{}, @valid_person_attrs)
     resource = Repo.insert! Map.merge(%Resource{}, @valid_attrs)
+    Repo.insert! %ResourceAuthor{resource_id: resource.id, author_id: person.id}
+
     conn = get conn, resource_path(conn, :index)
 
     assert conn.status == 200
@@ -29,7 +41,7 @@ defmodule EmberWeekendApi.ResourceControllerTest do
       },
       "links" => %{"self" => "/api/resources/#{resource.id}"},
       "id" => "#{resource.id}",
-      "type" => "resource",
+      "type" => "resources",
       "attributes" => @valid_attrs
                     |> string_keys
                     |> dasherize_keys
@@ -43,6 +55,11 @@ defmodule EmberWeekendApi.ResourceControllerTest do
 
     assert conn.status == 200
     assert json_api_response(conn)["data"] == %{
+      "relationships" => %{
+        "authors" => %{
+          "data" => []
+        }
+      },
       "id" => "#{resource.id}",
       "type" => "resources",
       "links" => %{"self" => "/api/resources/#{resource.id}"},
@@ -93,6 +110,11 @@ defmodule EmberWeekendApi.ResourceControllerTest do
     assert conn.status == 201
     resource_id = String.to_integer json_api_response(conn)["data"]["id"]
     assert json_api_response(conn)["data"] == %{
+      "relationships" => %{
+        "authors" => %{
+          "data" => []
+        }
+      },
       "id" => "#{resource_id}",
       "type" => "resources",
       "links" => %{"self" => "/api/resources/#{resource_id}"},

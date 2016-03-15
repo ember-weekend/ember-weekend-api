@@ -13,8 +13,10 @@ alias EmberWeekendApi.Repo
 alias EmberWeekendApi.Episode
 alias EmberWeekendApi.Person
 alias EmberWeekendApi.Resource
+alias EmberWeekendApi.ResourceAuthor
 
 Repo.delete_all(Episode)
+Repo.delete_all(ResourceAuthor)
 Repo.delete_all(Person)
 Repo.delete_all(Resource)
 
@@ -56,5 +58,11 @@ Repo.delete_all(Resource)
 [%Resource{
     title: "Plumbuses",
     url: "http://rickandmorty.wikia.com/wiki/Plumbus"
+  }
+] |> Enum.each(&Repo.insert!(&1))
+
+[%ResourceAuthor{
+    resource_id: (Repo.all(Resource) |> List.first).id,
+    author_id: (Repo.all(Person) |> List.first).id
   }
 ] |> Enum.each(&Repo.insert!(&1))

@@ -1,17 +1,14 @@
-defmodule EmberWeekendApi.Resource do
+defmodule EmberWeekendApi.ResourceAuthor do
   use EmberWeekendApi.Web, :model
-  alias EmberWeekendApi.ResourceAuthor
 
-  schema "resources" do
-    field :title, :string
-    field :url, :string
-    has_many :resource_authors, ResourceAuthor
-    has_many :authors, through: [:resource_authors, :author]
+  schema "resource_authors" do
+    belongs_to :author, EmberWeekendApi.Person
+    belongs_to :resource, EmberWeekendApi.Resource
 
     timestamps
   end
 
-  @required_fields ~w(title url)
+  @required_fields ~w()
   @optional_fields ~w()
 
   @doc """

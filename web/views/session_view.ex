@@ -3,6 +3,7 @@ defmodule EmberWeekendApi.SessionView do
   use JaSerializer.PhoenixView
   alias EmberWeekendApi.UserView
   alias EmberWeekendApi.User
+  def type, do: "sessions"
   attributes [:token]
 
   has_one :user,

@@ -9,7 +9,7 @@ defmodule EmberWeekendApi.ShowNote do
     timestamps
   end
 
-  @required_fields ~w(time_stamp)
+  @required_fields ~w(time_stamp resource_id episode_id)
   @optional_fields ~w()
 
   @doc """

@@ -3,7 +3,7 @@ defmodule EmberWeekendApi.ShowNoteTest do
 
   alias EmberWeekendApi.ShowNote
 
-  @valid_attrs %{time_stamp: "some content"}
+  @valid_attrs %{time_stamp: "some content", episode_id: 1, resource_id: 1}
   @invalid_attrs %{}
 
   test "changeset with valid attributes" do

@@ -72,6 +72,9 @@ defmodule EmberWeekendApi.ShowNoteControllerTest do
       "relationships" => %{
         "resource" => %{
           "data" => %{ "type" => "resources", "id" => "#{resource.id}" }
+        },
+        "episode" => %{
+          "data" => %{ "type" => "episodes", "id" => "#{episode.id}" }
         }
       },
       "links" => %{"self" => "/api/show_notes/#{show_note.id}"},
@@ -81,6 +84,44 @@ defmodule EmberWeekendApi.ShowNoteControllerTest do
                     |> string_keys
                     |> dasherize_keys
     }]
+  end
+
+  test "authenticated user can create show note", %{conn: conn} do
+    person = Repo.insert! Map.merge(%Person{}, @valid_person_attrs)
+    resource = Repo.insert! Map.merge(%Resource{}, @valid_resource_attrs)
+    Repo.insert! %ResourceAuthor{resource_id: resource.id, author_id: person.id}
+    episode = Repo.insert! Map.merge(%Episode{}, @valid_episode_attrs)
+
+    data = %{
+      data: %{
+        type: "show-notes",
+        attributes: @valid_attrs,
+        relationships: %{
+          "resource" => %{ "data" => %{ "type" => "resources", "id" => "#{resource.id}" } },
+          "episode"  => %{ "data" => %{ "type" => "episodes",  "id" => "#{episode.id}"  } }
+        }
+      }
+    }
+
+    conn = authenticated(conn)
+    conn = post conn, show_note_path(conn, :create, data)
+
+    assert conn.status == 201
+    show_note_id = String.to_integer json_api_response(conn)["data"]["id"]
+    assert json_api_response(conn)["data"] == %{
+      "id" => "#{show_note_id}",
+      "type" => "show-notes",
+      "links" => %{"self" => "/api/show_notes/#{show_note_id}"},
+      "attributes" => @valid_attrs
+                    |> string_keys
+                    |> dasherize_keys,
+      "relationships" => %{
+        "resource" => %{ "data" => %{ "type" => "resources", "id" => "#{resource.id}" } },
+        "episode"  => %{ "data" => %{ "type" => "episodes",  "id" => "#{episode.id}"  } }
+      }
+    }
+    assert Repo.all(ShowNote) |> Enum.count == 1
+    assert Repo.get!(ShowNote, show_note_id)
   end
 
 end

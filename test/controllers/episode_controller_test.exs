@@ -1,5 +1,9 @@
 defmodule EmberWeekendApi.EpisodeControllerTest do
   use EmberWeekendApi.ConnCase
+  alias EmberWeekendApi.ShowNote
+  alias EmberWeekendApi.Resource
+  alias EmberWeekendApi.Person
+  alias EmberWeekendApi.ResourceAuthor
   alias EmberWeekendApi.Episode
 
   @valid_attrs %{
@@ -13,6 +17,20 @@ defmodule EmberWeekendApi.EpisodeControllerTest do
 
   @invalid_attrs %{}
 
+  @valid_show_note_attrs %{time_stamp: "01:14"}
+
+  @valid_resource_attrs %{
+    title: "Plumbuses",
+    url: "http://rickandmorty.wikia.com/wiki/Plumbus"
+  }
+
+  @valid_person_attrs %{
+    name: "Jerry Smith",
+    handle: "dr_pluto",
+    url: "http://rickandmorty.wikia.com/wiki/Jerry_Smith",
+    avatar_url: "http://vignette3.wikia.nocookie.net/rickandmorty/images/5/5d/Jerry_S01E11_Sad.JPG/revision/latest?cb=20140501090439"
+  }
+
   setup %{conn: conn} do
     conn = conn
     |> put_req_header("accept", "application/vnd.api+json")
@@ -21,14 +39,34 @@ defmodule EmberWeekendApi.EpisodeControllerTest do
   end
 
   test "lists all episodes on index", %{conn: conn} do
+    episode = Repo.insert! Map.merge(%Episode{}, @valid_attrs)
     conn = get conn, episode_path(conn, :index)
 
     assert conn.status == 200
-    assert json_api_response(conn)["data"] == []
+
+    assert json_api_response(conn)["data"] == [%{
+      "id" => "#{episode.id}",
+      "type" => "episodes",
+      "attributes" => @valid_attrs
+                      |> string_keys
+                      |> dasherize_keys
+                      |> convert_dates,
+      "relationships" => %{
+        "show-notes" => %{
+          "data" => []
+        }
+      }
+    }]
   end
 
   test "shows episode", %{conn: conn} do
     episode = Repo.insert! Map.merge(%Episode{}, @valid_attrs)
+    person = Repo.insert! Map.merge(%Person{}, @valid_person_attrs)
+    resource = Repo.insert! Map.merge(%Resource{}, @valid_resource_attrs)
+    Repo.insert! %ResourceAuthor{resource_id: resource.id, author_id: person.id}
+    show_note = Repo.insert! Map.merge(%ShowNote{
+      episode_id: episode.id, resource_id: resource.id
+    }, @valid_show_note_attrs)
 
     conn = get conn, episode_path(conn, :show, episode)
 
@@ -39,9 +77,29 @@ defmodule EmberWeekendApi.EpisodeControllerTest do
     assert conn.status == 200
     assert json_api_response(conn)["data"] == %{
       "id" => "#{episode.id}",
-      "type" => "episode",
-      "attributes" => string_keys(attributes)
+      "type" => "episodes",
+      "attributes" => @valid_attrs
+                      |> string_keys
+                      |> dasherize_keys
+                      |> convert_dates,
+      "relationships" => %{
+        "show-notes" => %{
+          "data" => [%{ "type" => "show-notes", "id" => "#{show_note.id}" }]
+        }
+      }
     }
+    assert json_api_response(conn)["included"] == [%{
+      "attributes" => @valid_show_note_attrs
+                    |> string_keys
+                    |> dasherize_keys,
+      "id" => "#{show_note.id}",
+      "links" => %{"self" => "/api/show-notes/#{show_note.id}"},
+      "relationships" => %{
+        "resource" => %{ "data" => %{ "type" => "resources", "id" => "#{resource.id}" } },
+        "episode"  => %{ "data" => %{ "type" => "episodes",  "id" => "#{episode.id}"  } }
+      },
+      "type" => "show-notes"
+    }]
   end
 
   test "throws error for invalid episode id", %{conn: conn} do
@@ -99,7 +157,7 @@ defmodule EmberWeekendApi.EpisodeControllerTest do
     attributes = @valid_attrs
       |> Map.delete(:release_date)
       |> Map.merge(%{"release-date": "2013-12-15"})
-    data = %{data: %{type: "episode", attributes: attributes}}
+    data = %{data: %{type: "episodes", attributes: attributes}}
 
     conn = post conn, episode_path(conn, :create, data)
 
@@ -107,8 +165,13 @@ defmodule EmberWeekendApi.EpisodeControllerTest do
     episode_id = String.to_integer json_api_response(conn)["data"]["id"]
     assert json_api_response(conn)["data"] == %{
       "id" => "#{episode_id}",
-      "type" => "episode",
-      "attributes" => string_keys(attributes)
+      "type" => "episodes",
+      "attributes" => string_keys(attributes),
+      "relationships" => %{
+        "show-notes" => %{
+          "data" => []
+        }
+      }
     }
     assert Repo.all(Episode) |> Enum.count == 1
     assert Repo.get!(Episode, episode_id)
@@ -118,7 +181,7 @@ defmodule EmberWeekendApi.EpisodeControllerTest do
     conn = authenticated(conn)
     episode = Repo.insert! Map.merge(%Episode{}, @valid_attrs)
     attributes = %{title: "Better title"}
-    data = %{data: %{id: "#{episode.id}", type: "episode", attributes: attributes}}
+    data = %{data: %{id: "#{episode.id}", type: "episodes", attributes: attributes}}
 
     conn = put conn, episode_path(conn, :update, episode, data)
 
@@ -131,7 +194,7 @@ defmodule EmberWeekendApi.EpisodeControllerTest do
 
   test "authenticated user sees validation messages when creating episode", %{conn: conn} do
     conn = authenticated(conn)
-    data = %{data: %{type: "episode", attributes: @invalid_attrs}}
+    data = %{data: %{type: "episodes", attributes: @invalid_attrs}}
 
     conn = post conn, episode_path(conn, :create), data
 
@@ -149,7 +212,7 @@ defmodule EmberWeekendApi.EpisodeControllerTest do
   test "authenticated user sees validation messages when updating episode", %{conn: conn} do
     conn = authenticated(conn)
     episode = Repo.insert! Map.merge(%Episode{}, @valid_attrs)
-    data = %{data: %{id: "#{episode.id}", type: "episode", attributes: %{ title: nil }}}
+    data = %{data: %{id: "#{episode.id}", type: "episodes", attributes: %{ title: nil }}}
       |> string_keys
       |> dasherize_keys
       |> convert_dates

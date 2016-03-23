@@ -77,7 +77,7 @@ defmodule EmberWeekendApi.ShowNoteControllerTest do
           "data" => %{ "type" => "episodes", "id" => "#{episode.id}" }
         }
       },
-      "links" => %{"self" => "/api/show_notes/#{show_note.id}"},
+      "links" => %{"self" => "/api/show-notes/#{show_note.id}"},
       "id" => "#{show_note.id}",
       "type" => "show-notes",
       "attributes" => @valid_attrs
@@ -111,7 +111,7 @@ defmodule EmberWeekendApi.ShowNoteControllerTest do
     assert json_api_response(conn)["data"] == %{
       "id" => "#{show_note_id}",
       "type" => "show-notes",
-      "links" => %{"self" => "/api/show_notes/#{show_note_id}"},
+      "links" => %{"self" => "/api/show-notes/#{show_note_id}"},
       "attributes" => @valid_attrs
                     |> string_keys
                     |> dasherize_keys,

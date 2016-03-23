@@ -15,7 +15,7 @@ defmodule EmberWeekendApi.Router do
     resources "/people", PersonController, only: [:index, :show, :update, :delete, :create]
     resources "/resources", ResourceController, only: [:index, :show, :update, :delete, :create]
     resources "/resource_authors", ResourceAuthorController, only: [:index, :show, :update, :delete, :create]
-    resources "/show_notes", ShowNoteController, only: [:index, :show, :update, :delete, :create]
+    resources "/show-notes", ShowNoteController, only: [:index, :show, :update, :delete, :create]
     delete "/sessions/:token", SessionController, :delete
     post "/sessions", SessionController, :create
   end

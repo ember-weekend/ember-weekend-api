@@ -15,7 +15,7 @@ defmodule EmberWeekendApi.EpisodeController do
   def show(conn, %{"id" => id}) do
     case Repo.get(Episode, id) do
       nil -> not_found(conn)
-      episode -> render(conn, data: episode)
+      episode -> render(conn, data: episode, opts: [include: "show_notes"])
     end
   end
 

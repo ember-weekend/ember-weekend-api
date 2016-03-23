@@ -1,5 +1,6 @@
 defmodule EmberWeekendApi.Episode do
   use EmberWeekendApi.Web, :model
+  alias EmberWeekendApi.ShowNote
 
   schema "episodes" do
     field :title, :string
@@ -8,6 +9,7 @@ defmodule EmberWeekendApi.Episode do
     field :release_date, Timex.Ecto.Date
     field :filename, :string
     field :duration, :string
+    has_many :show_notes, ShowNote
 
     timestamps
   end

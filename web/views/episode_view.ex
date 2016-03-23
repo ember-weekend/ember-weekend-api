@@ -1,10 +1,29 @@
 defmodule EmberWeekendApi.EpisodeView do
   use EmberWeekendApi.Web, :view
   use JaSerializer.PhoenixView
+  alias EmberWeekendApi.ShowNoteView
+
   attributes [:title, :description, :slug, :release_date, :filename, :duration]
+
+  has_many :show_notes,
+    type: "show-notes",
+    serializer: ShowNoteView,
+    include: false
+
+  def type, do: "episodes"
 
   def release_date(episode, _conn) do
     {:ok, date} = Timex.DateFormat.format(episode.release_date, "{YYYY}-{M}-{D}")
     date
+  end
+
+  def show_notes(model, _conn) do
+    case model.show_notes do
+      %Ecto.Association.NotLoaded{} ->
+        model
+        |> Ecto.Model.assoc(:show_notes)
+        |> EmberWeekendApi.Repo.all
+      other -> other
+    end
   end
 end

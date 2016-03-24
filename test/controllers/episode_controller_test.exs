@@ -70,10 +70,45 @@ defmodule EmberWeekendApi.EpisodeControllerTest do
 
     conn = get conn, episode_path(conn, :show, episode)
 
-    attributes = @valid_attrs
-      |> string_keys
-      |> dasherize_keys
-      |> convert_dates
+    assert conn.status == 200
+    assert json_api_response(conn)["data"] == %{
+      "id" => "#{episode.id}",
+      "type" => "episodes",
+      "attributes" => @valid_attrs
+                      |> string_keys
+                      |> dasherize_keys
+                      |> convert_dates,
+      "relationships" => %{
+        "show-notes" => %{
+          "data" => [%{ "type" => "show-notes", "id" => "#{show_note.id}" }]
+        }
+      }
+    }
+    assert json_api_response(conn)["included"] == [%{
+      "attributes" => @valid_show_note_attrs
+                    |> string_keys
+                    |> dasherize_keys,
+      "id" => "#{show_note.id}",
+      "links" => %{"self" => "/api/show-notes/#{show_note.id}"},
+      "relationships" => %{
+        "resource" => %{ "data" => %{ "type" => "resources", "id" => "#{resource.id}" } },
+        "episode"  => %{ "data" => %{ "type" => "episodes",  "id" => "#{episode.id}"  } }
+      },
+      "type" => "show-notes"
+    }]
+  end
+
+  test "shows episode by slug", %{conn: conn} do
+    episode = Repo.insert! Map.merge(%Episode{}, @valid_attrs)
+    person = Repo.insert! Map.merge(%Person{}, @valid_person_attrs)
+    resource = Repo.insert! Map.merge(%Resource{}, @valid_resource_attrs)
+    Repo.insert! %ResourceAuthor{resource_id: resource.id, author_id: person.id}
+    show_note = Repo.insert! Map.merge(%ShowNote{
+      episode_id: episode.id, resource_id: resource.id
+    }, @valid_show_note_attrs)
+
+    conn = get conn, episode_path(conn, :show, episode.slug)
+
     assert conn.status == 200
     assert json_api_response(conn)["data"] == %{
       "id" => "#{episode.id}",

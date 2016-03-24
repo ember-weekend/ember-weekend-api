@@ -13,9 +13,16 @@ defmodule EmberWeekendApi.EpisodeController do
   end
 
   def show(conn, %{"id" => id}) do
-    case Repo.get(Episode, id) do
+    case find_by_slug_or_id(id) do
       nil -> not_found(conn)
       episode -> render(conn, data: episode, opts: [include: "show_notes"])
+    end
+  end
+
+  defp find_by_slug_or_id(id) do
+    case Integer.parse(id) do
+      :error -> Repo.get_by(Episode, %{slug: id})
+      {id,_} -> Repo.get(Episode, id)
     end
   end
 

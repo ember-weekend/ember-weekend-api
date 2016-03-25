@@ -3,6 +3,7 @@ defmodule EmberWeekendApi.Episode do
   alias EmberWeekendApi.ShowNote
 
   schema "episodes" do
+    field :number, :integer
     field :title, :string
     field :description, :string
     field :slug, :string
@@ -14,7 +15,7 @@ defmodule EmberWeekendApi.Episode do
     timestamps
   end
 
-  @required_fields ~w(title description slug release_date filename duration)
+  @required_fields ~w(number title description slug release_date filename duration)
   @optional_fields ~w()
 
   @doc """

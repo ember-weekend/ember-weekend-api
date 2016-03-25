@@ -3,7 +3,7 @@ defmodule EmberWeekendApi.EpisodeView do
   use JaSerializer.PhoenixView
   alias EmberWeekendApi.ShowNoteView
 
-  attributes [:title, :description, :slug, :release_date, :filename, :duration]
+  attributes [:number, :title, :description, :slug, :release_date, :filename, :duration]
 
   has_many :show_notes,
     type: "show-notes",

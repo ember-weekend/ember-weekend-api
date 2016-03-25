@@ -7,6 +7,7 @@ defmodule EmberWeekendApi.EpisodeControllerTest do
   alias EmberWeekendApi.Episode
 
   @valid_attrs %{
+    number: 1,
     title: "Anatomy Park",
     description: "Rick and Morty try to save the life of a homeless man; Jerry's parents visit.",
     slug: "anatomy-park",
@@ -235,6 +236,7 @@ defmodule EmberWeekendApi.EpisodeControllerTest do
 
     assert conn.status == 422
     assert (json_api_response(conn)["errors"] |> sort_by("detail")) == [
+      cant_be_blank("number"),
       cant_be_blank("title"),
       cant_be_blank("description"),
       cant_be_blank("release_date"),

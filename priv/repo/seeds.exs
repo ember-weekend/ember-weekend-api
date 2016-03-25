@@ -24,6 +24,7 @@ Repo.delete_all(Resource)
 
 [
   %Episode{
+    number: 1,
     title: "Pilot",
     description: "Rick moves in with his daughter's family and becomes a bad influence on his grandson, Morty.",
     slug: "pilot",
@@ -32,6 +33,7 @@ Repo.delete_all(Resource)
     duration: "1:00:00"
   },
   %Episode{
+    number: 2,
     title: "Lawnmower Dog",
     description: "Rick helps Jerry with the dog and incept Goldenfold.",
     slug: "lawnmower-dog",
@@ -40,6 +42,7 @@ Repo.delete_all(Resource)
     duration: "1:00:00"
   },
   %Episode{
+    number: 3,
     title: "Anatomy Park",
     description: "Rick and Morty try to save the life of a homeless man; Jerry's parents visit.",
     slug: "anatomy-park",

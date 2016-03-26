@@ -41,4 +41,13 @@ config :ember_weekend_api, EmberWeekendApi.Repo,
 
 config :ember_weekend_api, :github_api, EmberWeekendApi.Github.HTTPClient
 
+admins = System.get_env("ADMINS") || "code0100fun, rondale-sc"
+          |> (fn
+            admins when is_binary(admins) -> admins
+            _ -> raise "Must define ADMINS on ENV" end).()
+          |> String.replace(~r/\s/,"")
+          |> String.split(",")
+
+config :ember_weekend_api, :admins, admins
+
 import_config "dev.secret.exs"

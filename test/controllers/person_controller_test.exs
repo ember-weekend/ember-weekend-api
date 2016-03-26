@@ -79,8 +79,33 @@ defmodule EmberWeekendApi.PersonControllerTest do
     assert person
   end
 
-  test "authenticated user can create person", %{conn: conn} do
+  test "non-admin user can't update person", %{conn: conn} do
     conn = authenticated(conn)
+    person = Repo.insert! Map.merge(%Person{}, @valid_attrs)
+    data = %{data: %{attributes: %{name: "Not secure"}}}
+
+    conn = put conn, person_path(conn, :update, person), data
+
+    assert conn.status == 401
+    assert json_api_response(conn)["errors"] == unauthorized("person", "update")
+    person = Repo.get!(Person, person.id)
+    assert person.name == @valid_attrs[:name]
+  end
+
+  test "non-admin user can't delete person", %{conn: conn} do
+    conn = authenticated(conn)
+    person = Repo.insert! Map.merge(%Person{}, @valid_attrs)
+
+    conn = delete conn, person_path(conn, :update, person)
+
+    assert conn.status == 401
+    assert json_api_response(conn)["errors"] == unauthorized("person", "delete")
+    person = Repo.get!(Person, person.id)
+    assert person
+  end
+
+  test "admin user can create person", %{conn: conn} do
+    conn = admin(conn)
     attributes = @valid_attrs
       |> dasherize_keys
     data = %{data: %{type: "people", attributes: attributes}}
@@ -99,8 +124,8 @@ defmodule EmberWeekendApi.PersonControllerTest do
     assert Repo.get!(Person, person_id)
   end
 
-  test "authenticated user can update person", %{conn: conn} do
-    conn = authenticated(conn)
+  test "admin user can update person", %{conn: conn} do
+    conn = admin(conn)
     person = Repo.insert! Map.merge(%Person{}, @valid_attrs)
     attributes = %{name: "Better Name"}
     data = %{data: %{id: "#{person.id}", type: "people", attributes: attributes}}
@@ -114,8 +139,8 @@ defmodule EmberWeekendApi.PersonControllerTest do
     assert person.name == "Better Name"
   end
 
-  test "authenticated user sees validation messages when creating person", %{conn: conn} do
-    conn = authenticated(conn)
+  test "admin user sees validation messages when creating person", %{conn: conn} do
+    conn = admin(conn)
     data = %{data: %{type: "people", attributes: @invalid_attrs}}
 
     conn = post conn, person_path(conn, :create), data
@@ -129,8 +154,8 @@ defmodule EmberWeekendApi.PersonControllerTest do
     ] |> sort_by("detail")
   end
 
-  test "authenticated user sees validation messages when updating person", %{conn: conn} do
-    conn = authenticated(conn)
+  test "admin user sees validation messages when updating person", %{conn: conn} do
+    conn = admin(conn)
     person = Repo.insert! Map.merge(%Person{}, @valid_attrs)
     data = %{data: %{id: "#{person.id}", type: "people", attributes: %{"name" => nil}}}
 
@@ -142,8 +167,8 @@ defmodule EmberWeekendApi.PersonControllerTest do
     ]
   end
 
-  test "authenticated user can delete person", %{conn: conn} do
-    conn = authenticated(conn)
+  test "admin user can delete person", %{conn: conn} do
+    conn = admin(conn)
     person = Repo.insert! Map.merge(%Person{}, @valid_attrs)
 
     conn = delete conn, person_path(conn, :update, person)

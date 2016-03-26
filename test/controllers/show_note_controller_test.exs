@@ -86,7 +86,8 @@ defmodule EmberWeekendApi.ShowNoteControllerTest do
     }]
   end
 
-  test "authenticated user can create show note", %{conn: conn} do
+  test "admin user can create show note", %{conn: conn} do
+    conn = admin(conn)
     person = Repo.insert! Map.merge(%Person{}, @valid_person_attrs)
     resource = Repo.insert! Map.merge(%Resource{}, @valid_resource_attrs)
     Repo.insert! %ResourceAuthor{resource_id: resource.id, author_id: person.id}
@@ -103,7 +104,6 @@ defmodule EmberWeekendApi.ShowNoteControllerTest do
       }
     }
 
-    conn = authenticated(conn)
     conn = post conn, show_note_path(conn, :create), data
 
     assert conn.status == 201

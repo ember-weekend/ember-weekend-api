@@ -3,7 +3,6 @@ defmodule EmberWeekendApi.SessionView do
   use JaSerializer.PhoenixView
   alias EmberWeekendApi.UserView
   alias EmberWeekendApi.User
-  def type, do: "sessions"
   attributes [:token]
 
   has_one :user,
@@ -12,12 +11,14 @@ defmodule EmberWeekendApi.SessionView do
     serializer: UserView,
     include: true
 
+  def type, do: "sessions"
+
   def user(model, conn) do
     case model.user do
       %Ecto.Association.NotLoaded{} ->
         model
         |> Ecto.Model.assoc(:user)
-        |> EmberWeekendApi.Repo.all
+        |> EmberWeekendApi.Repo.one
       other -> other
     end
   end

@@ -115,13 +115,34 @@ defmodule EmberWeekendApi.ConnCase do
         }
       end
 
-      @valid_user_attrs %{
+      @valid_admin_user_attrs %{
         name: "Rick Sanchez",
         username: "tinyrick"
       }
+
+      @valid_user_attrs %{
+        name: "Jerry Smith",
+        username: "dr_pluto"
+      }
+
+      def admin(conn) do
+        authenticated(conn, @valid_admin_user_attrs)
+      end
+
       def authenticated(conn) do
+        authenticated(conn, @valid_user_attrs)
+      end
+
+      def authenticated(conn, attributes) do
         token = "VALID"
-        user = Repo.insert! User.changeset %User{}, @valid_user_attrs
+        user = Repo.insert! User.changeset %User{}, attributes
+        linked_accounts = Repo.insert! %LinkedAccount{
+          username: attributes[:username],
+          provider: "github",
+          provider_id: "1",
+          access_token: "valid_token",
+          user_id: user.id
+        }
         Repo.insert! %Session{token: token, user_id: user.id}
         put_req_header(conn, "authorization", "token #{token}")
       end

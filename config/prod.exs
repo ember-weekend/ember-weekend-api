@@ -15,3 +15,12 @@ config :ember_weekend_api, EmberWeekendApi.Repo,
 config :logger, level: :info
 
 config :ember_weekend_api, :github_api, EmberWeekendApi.Github.HTTPClient
+
+admins = System.get_env("ADMINS")
+          |> (fn
+            admins when is_binary(admins) -> admins
+            _ -> raise "Must define ADMINS on ENV" end).()
+          |> String.replace(~r/\s/,"")
+          |> String.split(",")
+
+config :ember_weekend_api, :admins, admins

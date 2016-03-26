@@ -99,9 +99,34 @@ defmodule EmberWeekendApi.ResourceControllerTest do
     assert resource
   end
 
-  test "authenticated user can create resource", %{conn: conn} do
-    person = Repo.insert! Map.merge(%Person{}, @valid_person_attrs)
+  test "non-admin user can't update resource", %{conn: conn} do
     conn = authenticated(conn)
+    resource = Repo.insert! Map.merge(%Resource{}, @valid_attrs)
+    data = %{data: %{attributes: %{title: "Not secure"}}}
+
+    conn = put conn, resource_path(conn, :update, resource), data
+
+    assert conn.status == 401
+    assert json_api_response(conn)["errors"] == unauthorized("resource", "update")
+    resource = Repo.get!(Resource, resource.id)
+    assert resource.title == @valid_attrs[:title]
+  end
+
+  test "non-admin user can't delete resource", %{conn: conn} do
+    conn = authenticated(conn)
+    resource = Repo.insert! Map.merge(%Resource{}, @valid_attrs)
+
+    conn = delete conn, resource_path(conn, :update, resource)
+
+    assert conn.status == 401
+    assert json_api_response(conn)["errors"] == unauthorized("resource", "delete")
+    resource = Repo.get!(Resource, resource.id)
+    assert resource
+  end
+
+  test "admin user can create resource", %{conn: conn} do
+    conn = admin(conn)
+    person = Repo.insert! Map.merge(%Person{}, @valid_person_attrs)
     attributes = @valid_attrs
       |> dasherize_keys
     data = %{
@@ -133,8 +158,8 @@ defmodule EmberWeekendApi.ResourceControllerTest do
     assert Repo.get!(Resource, resource_id)
   end
 
-  test "authenticated user can update resource", %{conn: conn} do
-    conn = authenticated(conn)
+  test "admin user can update resource", %{conn: conn} do
+    conn = admin(conn)
     resource = Repo.insert! Map.merge(%Resource{}, @valid_attrs)
     attributes = %{title: "Better Title"}
     data = %{data: %{id: "#{resource.id}", type: "resources", attributes: attributes}}
@@ -148,8 +173,8 @@ defmodule EmberWeekendApi.ResourceControllerTest do
     assert resource.title == "Better Title"
   end
 
-  test "authenticated user sees validation messages when creating resource", %{conn: conn} do
-    conn = authenticated(conn)
+  test "admin user sees validation messages when creating resource", %{conn: conn} do
+    conn = admin(conn)
     data = %{data: %{type: "resources", attributes: @invalid_attrs}}
 
     conn = post conn, resource_path(conn, :create), data
@@ -161,8 +186,8 @@ defmodule EmberWeekendApi.ResourceControllerTest do
     ] |> sort_by("detail")
   end
 
-  test "authenticated user sees validation messages when updating resource", %{conn: conn} do
-    conn = authenticated(conn)
+  test "admin user sees validation messages when updating resource", %{conn: conn} do
+    conn = admin(conn)
     resource = Repo.insert! Map.merge(%Resource{}, @valid_attrs)
     data = %{data: %{id: "#{resource.id}", type: "resources", attributes: %{"title" => nil}}}
 
@@ -174,8 +199,8 @@ defmodule EmberWeekendApi.ResourceControllerTest do
     ]
   end
 
-  test "authenticated user can delete resource", %{conn: conn} do
-    conn = authenticated(conn)
+  test "admin user can delete resource", %{conn: conn} do
+    conn = admin(conn)
     resource = Repo.insert! Map.merge(%Resource{}, @valid_attrs)
 
     conn = delete conn, resource_path(conn, :update, resource)

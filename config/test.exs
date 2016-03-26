@@ -17,3 +17,4 @@ config :ember_weekend_api, EmberWeekendApi.Repo,
   pool: Ecto.Adapters.SQL.Sandbox
 
 config :ember_weekend_api, :github_api, EmberWeekendApi.Github.Stub
+config :ember_weekend_api, :admins, ["tinyrick"]

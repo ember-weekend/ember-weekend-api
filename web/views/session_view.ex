@@ -8,7 +8,7 @@ defmodule EmberWeekendApi.SessionView do
 
   has_one :user,
     field: :user,
-    type: User,
+    type: "users",
     serializer: UserView,
     include: true
 

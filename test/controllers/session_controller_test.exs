@@ -35,7 +35,7 @@ defmodule EmberWeekendApi.SessionControllerTest do
 
     included = json_api_response(conn)["included"] |> List.first
 
-    assert included["type"] == "user"
+    assert included["type"] == "users"
     assert included["attributes"] == @github_user
 
     assert Repo.all(LinkedAccount) |> Enum.count == 1
@@ -69,7 +69,7 @@ defmodule EmberWeekendApi.SessionControllerTest do
 
     included = json_api_response(conn)["included"] |> List.first
 
-    assert included["type"] == "user"
+    assert included["type"] == "users"
     assert included["attributes"] == @github_user
 
     assert Repo.all(LinkedAccount) |> Enum.count == 1
@@ -95,7 +95,7 @@ defmodule EmberWeekendApi.SessionControllerTest do
 
     included = json_api_response(conn)["included"] |> List.first
 
-    assert included["type"] == "user"
+    assert included["type"] == "users"
     assert included["attributes"] == @github_user
 
     assert Repo.all(LinkedAccount) |> Enum.count == 1

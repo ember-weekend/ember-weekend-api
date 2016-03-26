@@ -8,7 +8,7 @@ defmodule EmberWeekendApi.ResourceAuthor do
     timestamps
   end
 
-  @required_fields ~w()
+  @required_fields ~w(author_id resource_id)
   @optional_fields ~w()
 
   @doc """

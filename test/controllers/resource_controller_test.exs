@@ -100,10 +100,19 @@ defmodule EmberWeekendApi.ResourceControllerTest do
   end
 
   test "authenticated user can create resource", %{conn: conn} do
+    person = Repo.insert! Map.merge(%Person{}, @valid_person_attrs)
     conn = authenticated(conn)
     attributes = @valid_attrs
       |> dasherize_keys
-    data = %{data: %{type: "resources", attributes: attributes}}
+    data = %{
+      data: %{
+        type: "resources",
+        attributes: attributes,
+        relationships: %{
+          authors: %{ data: [%{ type: "people", id: "#{person.id}" }] }
+        }
+      }
+    }
 
     conn = post conn, resource_path(conn, :create), data
 
@@ -112,7 +121,7 @@ defmodule EmberWeekendApi.ResourceControllerTest do
     assert json_api_response(conn)["data"] == %{
       "relationships" => %{
         "authors" => %{
-          "data" => []
+          "data" => [%{ "type" => "people", "id" => "#{person.id}" }]
         }
       },
       "id" => "#{resource_id}",

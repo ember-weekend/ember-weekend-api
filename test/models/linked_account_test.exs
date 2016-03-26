@@ -3,7 +3,13 @@ defmodule EmberWeekendApi.LinkedAccountTest do
 
   alias EmberWeekendApi.LinkedAccount
 
-  @valid_attrs %{access_token: "some content", provider: "some content", provider_id: "some content", user_id: 1}
+  @valid_attrs %{
+    username: "some_username",
+    access_token: "some content",
+    provider: "some content",
+    provider_id: "some content",
+    user_id: 1
+  }
   @invalid_attrs %{}
 
   test "changeset with valid attributes" do

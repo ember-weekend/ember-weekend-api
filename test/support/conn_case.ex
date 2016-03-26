@@ -24,6 +24,7 @@ defmodule EmberWeekendApi.ConnCase do
 
       alias EmberWeekendApi.Repo
       alias EmberWeekendApi.User
+      alias EmberWeekendApi.LinkedAccount
       alias EmberWeekendApi.Session
       import Ecto
       import Ecto.Changeset

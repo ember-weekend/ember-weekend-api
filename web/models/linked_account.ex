@@ -2,6 +2,7 @@ defmodule EmberWeekendApi.LinkedAccount do
   use EmberWeekendApi.Web, :model
 
   schema "linked_accounts" do
+    field :username, :string
     field :provider, :string
     field :access_token, :string
     field :provider_id, :string
@@ -10,7 +11,7 @@ defmodule EmberWeekendApi.LinkedAccount do
     timestamps
   end
 
-  @required_fields ~w(provider access_token provider_id user_id)
+  @required_fields ~w(provider access_token provider_id user_id username)
   @optional_fields ~w()
 
   @doc """

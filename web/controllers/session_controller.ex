@@ -75,16 +75,14 @@ defmodule EmberWeekendApi.SessionController do
       nil ->
         case create_user(attrs) do
           {:ok, user} ->
-            provider_id = attrs[:provider_id]
-            case find_or_create_linked_account(user, access_token, provider, provider_id) do
+            case find_or_create_linked_account(user, attrs, access_token, provider) do
               {:error, error} -> {:error, error}
               _ -> {:ok, user}
             end
           error -> error
         end
       user ->
-        provider_id = attrs[:provider_id]
-        case find_or_create_linked_account(user, access_token, provider, provider_id) do
+        case find_or_create_linked_account(user, attrs, access_token, provider) do
           {:error, error} -> {:error, error}
           _ -> {:ok, user}
         end
@@ -102,14 +100,15 @@ defmodule EmberWeekendApi.SessionController do
     end
   end
 
-  defp find_or_create_linked_account(user, access_token, provider, provider_id) do
-    case Repo.get_by(LinkedAccount, access_token: access_token, provider: provider, provider_id: provider_id) do
+  defp find_or_create_linked_account(user, attrs, access_token, provider) do
+    case Repo.get_by(LinkedAccount, access_token: access_token, provider: provider) do
       nil ->
         changeset = LinkedAccount.changeset(%LinkedAccount{}, %{
+          username: attrs[:username],
           user_id: user.id,
           access_token: access_token,
           provider: provider,
-          provider_id: provider_id
+          provider_id: attrs[:provider_id]
         })
 
         case Repo.insert(changeset) do

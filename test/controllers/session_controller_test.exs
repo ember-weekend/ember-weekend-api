@@ -16,7 +16,12 @@ defmodule EmberWeekendApi.SessionControllerTest do
         provider: "github", code: "invalid_code", state: "123456"
       }
   }}
-  @valid_linked   %{provider: "github", access_token: "valid_token", provider_id: "1"}
+  @valid_linked   %{
+    username: "tinyrick",
+    provider: "github",
+    access_token: "valid_token",
+    provider_id: "1"
+  }
   @github_user    %{"name" => "Rick Sanchez", "username" => "tinyrick"}
 
   setup %{conn: conn} do
@@ -50,6 +55,7 @@ defmodule EmberWeekendApi.SessionControllerTest do
     assert linked.user_id == user.id
     assert linked.provider == "github"
     assert linked.provider_id == "1"
+    assert linked.username == "tinyrick"
 
     session = Repo.all(Session) |> List.first
     assert session.user_id == user.id

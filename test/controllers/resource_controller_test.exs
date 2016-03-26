@@ -80,7 +80,7 @@ defmodule EmberWeekendApi.ResourceControllerTest do
     resource = Repo.insert! Map.merge(%Resource{}, @valid_attrs)
     data = %{data: %{attributes: %{title: "Not secure"}}}
 
-    conn = put conn, resource_path(conn, :update, resource, data)
+    conn = put conn, resource_path(conn, :update, resource), data
 
     assert conn.status == 401
     assert json_api_response(conn)["errors"] == unauthorized("resource", "update")
@@ -105,7 +105,7 @@ defmodule EmberWeekendApi.ResourceControllerTest do
       |> dasherize_keys
     data = %{data: %{type: "resources", attributes: attributes}}
 
-    conn = post conn, resource_path(conn, :create, data)
+    conn = post conn, resource_path(conn, :create), data
 
     assert conn.status == 201
     resource_id = String.to_integer json_api_response(conn)["data"]["id"]
@@ -130,7 +130,7 @@ defmodule EmberWeekendApi.ResourceControllerTest do
     attributes = %{title: "Better Title"}
     data = %{data: %{id: "#{resource.id}", type: "resources", attributes: attributes}}
 
-    conn = put conn, resource_path(conn, :update, resource, data)
+    conn = put conn, resource_path(conn, :update, resource), data
 
     assert conn.status == 200
     assert json_api_response(conn)["data"]["attributes"]["title"] == "Better Title"

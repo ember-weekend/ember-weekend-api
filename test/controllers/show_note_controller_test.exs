@@ -104,7 +104,7 @@ defmodule EmberWeekendApi.ShowNoteControllerTest do
     }
 
     conn = authenticated(conn)
-    conn = post conn, show_note_path(conn, :create, data)
+    conn = post conn, show_note_path(conn, :create), data
 
     assert conn.status == 201
     show_note_id = String.to_integer json_api_response(conn)["data"]["id"]

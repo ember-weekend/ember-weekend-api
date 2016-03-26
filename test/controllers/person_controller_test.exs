@@ -60,7 +60,7 @@ defmodule EmberWeekendApi.PersonControllerTest do
     person = Repo.insert! Map.merge(%Person{}, @valid_attrs)
     data = %{data: %{attributes: %{name: "Not secure"}}}
 
-    conn = put conn, person_path(conn, :update, person, data)
+    conn = put conn, person_path(conn, :update, person), data
 
     assert conn.status == 401
     assert json_api_response(conn)["errors"] == unauthorized("person", "update")
@@ -85,7 +85,7 @@ defmodule EmberWeekendApi.PersonControllerTest do
       |> dasherize_keys
     data = %{data: %{type: "people", attributes: attributes}}
 
-    conn = post conn, person_path(conn, :create, data)
+    conn = post conn, person_path(conn, :create), data
 
     assert conn.status == 201
     person_id = String.to_integer json_api_response(conn)["data"]["id"]
@@ -105,7 +105,7 @@ defmodule EmberWeekendApi.PersonControllerTest do
     attributes = %{name: "Better Name"}
     data = %{data: %{id: "#{person.id}", type: "people", attributes: attributes}}
 
-    conn = put conn, person_path(conn, :update, person, data)
+    conn = put conn, person_path(conn, :update, person), data
 
     assert conn.status == 200
     assert json_api_response(conn)["data"]["attributes"]["name"] == "Better Name"

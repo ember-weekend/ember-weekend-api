@@ -49,13 +49,6 @@ defmodule EmberWeekendApi.ShowNoteControllerTest do
 
     assert conn.status == 200
     assert json_api_response(conn)["included"] == [%{
-          "id" => "#{person.id}",
-          "type" => "people",
-          "links" => %{"self" => "/api/people/#{person.id}"},
-          "attributes" => @valid_person_attrs
-                        |> string_keys
-                        |> dasherize_keys
-        },%{
           "id" => "#{resource.id}",
           "type" => "resources",
           "links" => %{"self" => "/api/resources/#{resource.id}"},
@@ -65,6 +58,13 @@ defmodule EmberWeekendApi.ShowNoteControllerTest do
             }
           },
           "attributes" => @valid_resource_attrs
+                        |> string_keys
+                        |> dasherize_keys
+        },%{
+          "id" => "#{person.id}",
+          "type" => "people",
+          "links" => %{"self" => "/api/people/#{person.id}"},
+          "attributes" => @valid_person_attrs
                         |> string_keys
                         |> dasherize_keys
     }]

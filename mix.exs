@@ -42,7 +42,7 @@ defmodule EmberWeekendApi.Mixfile do
      {:json, "~> 0.3.0"},
      {:timex, "~> 1.0.2"},
      {:timex_ecto, "~> 0.9.0"},
-     {:ja_serializer, "~> 0.7"}]
+     {:ja_serializer, "~> 0.8"}]
   end
 
   # Aliases are shortcut or tasks specific to the current project.

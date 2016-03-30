@@ -24,6 +24,11 @@ Repo.delete_all(ResourceAuthor)
 Repo.delete_all(Person)
 Repo.delete_all(Resource)
 
+[:episodes, :users, :show_notes, :resource_authors, :people, :resources, :episode_guests]
+  |> (Enum.each(fn(table) ->
+    Ecto.Adapters.SQL.query(EmberWeekendApi.Repo, "ALTER SEQUENCE #{table}_id_seq RESTART WITH 1;", [])
+  end))
+
 [
   %Episode{
     number: 1,

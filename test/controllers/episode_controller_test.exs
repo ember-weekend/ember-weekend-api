@@ -107,6 +107,16 @@ defmodule EmberWeekendApi.EpisodeControllerTest do
       },
       "type" => "show-notes"
     },%{
+      "attributes" => @valid_resource_attrs
+                    |> string_keys
+                    |> dasherize_keys,
+      "id" => "#{resource.id}",
+      "links" => %{"self" => "/api/resources/#{resource.id}"},
+      "type" => "resources",
+      "relationships" => %{
+        "authors" => %{ "data" => [%{ "type" => "people", "id" => "#{person.id}" }] },
+      }
+    },%{
       "attributes" => @valid_person_attrs
                     |> string_keys
                     |> dasherize_keys,
@@ -156,6 +166,16 @@ defmodule EmberWeekendApi.EpisodeControllerTest do
         "episode"  => %{ "data" => %{ "type" => "episodes",  "id" => "#{episode.id}"  } }
       },
       "type" => "show-notes"
+    },%{
+      "attributes" => @valid_resource_attrs
+                    |> string_keys
+                    |> dasherize_keys,
+      "id" => "#{resource.id}",
+      "links" => %{"self" => "/api/resources/#{resource.id}"},
+      "type" => "resources",
+      "relationships" => %{
+        "authors" => %{ "data" => [%{ "type" => "people", "id" => "#{person.id}" }] },
+      }
     },%{
       "attributes" => @valid_person_attrs
                     |> string_keys

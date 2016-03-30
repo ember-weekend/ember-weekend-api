@@ -66,6 +66,14 @@ Repo.delete_all(Resource)
     bio: "Jerry can sometimes become misguided by his insecurities.",
     url: "http://rickandmorty.wikia.com/wiki/Jerry_Smith",
     avatar_url: "http://vignette3.wikia.nocookie.net/rickandmorty/images/5/5d/Jerry_S01E11_Sad.JPG/revision/latest?cb=20140501090439"
+  },
+  %Person{
+    name: "Rick Sanchez",
+    handle: "tinyrick",
+    tagline: "wubbalubbadubdub",
+    bio: "Rick's most prominent personality trait barring his drug and alcohol dependency is his sociopathy.",
+    url: "http://rickandmorty.wikia.com/wiki/Rick_Sanchez",
+    avatar_url: "http://vignette4.wikia.nocookie.net/rickandmorty/images/d/dd/Rick.png/revision/latest?cb=20131230003659"
   }
 ] |> Enum.each(&Repo.insert!(&1))
 
@@ -90,6 +98,6 @@ Repo.delete_all(Resource)
 
 [%EpisodeGuest{
     episode_id: (Repo.all(Episode) |> List.first).id,
-    guest_id: (Repo.all(Person) |> List.first).id
+    guest_id: (Repo.all(Person) |> List.last).id
   }
 ] |> Enum.each(&Repo.insert!(&1))

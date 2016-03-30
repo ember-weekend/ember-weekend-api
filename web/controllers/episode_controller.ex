@@ -17,7 +17,7 @@ defmodule EmberWeekendApi.EpisodeController do
     case find_by_slug_or_id(id) do
       nil -> not_found(conn)
       episode -> render(conn, data: episode, opts: [
-        include: "show_notes,guests"
+        include: "show_notes,show_notes.resource,show_notes.resource.authors,guests"
       ])
     end
   end

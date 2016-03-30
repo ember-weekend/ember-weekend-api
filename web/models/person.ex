@@ -7,12 +7,13 @@ defmodule EmberWeekendApi.Person do
     field :url, :string
     field :avatar_url, :string
     field :tagline, :string
+    field :bio, :string
 
     timestamps
   end
 
   @required_fields ~w(name handle url avatar_url)
-  @optional_fields ~w(tagline)
+  @optional_fields ~w(tagline bio)
 
   @doc """
   Creates a changeset based on the `model` and `params`.

@@ -2,12 +2,18 @@ defmodule EmberWeekendApi.EpisodeView do
   use EmberWeekendApi.Web, :view
   use JaSerializer.PhoenixView
   alias EmberWeekendApi.ShowNoteView
+  alias EmberWeekendApi.PersonView
 
   attributes [:number, :title, :description, :slug, :release_date, :filename, :duration]
 
   has_many :show_notes,
     type: "show-notes",
     serializer: ShowNoteView,
+    include: false
+
+  has_many :guests,
+    type: "people",
+    serializer: PersonView,
     include: false
 
   def type, do: "episodes"
@@ -22,6 +28,16 @@ defmodule EmberWeekendApi.EpisodeView do
       %Ecto.Association.NotLoaded{} ->
         model
         |> Ecto.Model.assoc(:show_notes)
+        |> EmberWeekendApi.Repo.all
+      other -> other
+    end
+  end
+
+  def guests(model, _conn) do
+    case model.guests do
+      %Ecto.Association.NotLoaded{} ->
+        model
+        |> Ecto.Model.assoc(:guests)
         |> EmberWeekendApi.Repo.all
       other -> other
     end

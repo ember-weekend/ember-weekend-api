@@ -5,6 +5,7 @@ defmodule EmberWeekendApi.EpisodeControllerTest do
   alias EmberWeekendApi.Person
   alias EmberWeekendApi.ResourceAuthor
   alias EmberWeekendApi.Episode
+  alias EmberWeekendApi.EpisodeGuest
 
   @valid_attrs %{
     number: 1,
@@ -53,6 +54,9 @@ defmodule EmberWeekendApi.EpisodeControllerTest do
                       |> dasherize_keys
                       |> convert_dates,
       "relationships" => %{
+        "guests" => %{
+          "data" => []
+        },
         "show-notes" => %{
           "data" => []
         }
@@ -65,6 +69,7 @@ defmodule EmberWeekendApi.EpisodeControllerTest do
     person = Repo.insert! Map.merge(%Person{}, @valid_person_attrs)
     resource = Repo.insert! Map.merge(%Resource{}, @valid_resource_attrs)
     Repo.insert! %ResourceAuthor{resource_id: resource.id, author_id: person.id}
+    Repo.insert! %EpisodeGuest{episode_id: episode.id, guest_id: person.id}
     show_note = Repo.insert! Map.merge(%ShowNote{
       episode_id: episode.id, resource_id: resource.id
     }, @valid_show_note_attrs)
@@ -80,6 +85,9 @@ defmodule EmberWeekendApi.EpisodeControllerTest do
                       |> dasherize_keys
                       |> convert_dates,
       "relationships" => %{
+        "guests" => %{
+          "data" => [%{ "type" => "people", "id" => "#{person.id}" }]
+        },
         "show-notes" => %{
           "data" => [%{ "type" => "show-notes", "id" => "#{show_note.id}" }]
         }
@@ -96,6 +104,13 @@ defmodule EmberWeekendApi.EpisodeControllerTest do
         "episode"  => %{ "data" => %{ "type" => "episodes",  "id" => "#{episode.id}"  } }
       },
       "type" => "show-notes"
+    },%{
+      "attributes" => @valid_person_attrs
+                    |> string_keys
+                    |> dasherize_keys,
+      "id" => "#{person.id}",
+      "links" => %{"self" => "/api/people/#{person.id}"},
+      "type" => "people"
     }]
   end
 
@@ -104,6 +119,7 @@ defmodule EmberWeekendApi.EpisodeControllerTest do
     person = Repo.insert! Map.merge(%Person{}, @valid_person_attrs)
     resource = Repo.insert! Map.merge(%Resource{}, @valid_resource_attrs)
     Repo.insert! %ResourceAuthor{resource_id: resource.id, author_id: person.id}
+    Repo.insert! %EpisodeGuest{episode_id: episode.id, guest_id: person.id}
     show_note = Repo.insert! Map.merge(%ShowNote{
       episode_id: episode.id, resource_id: resource.id
     }, @valid_show_note_attrs)
@@ -121,6 +137,9 @@ defmodule EmberWeekendApi.EpisodeControllerTest do
       "relationships" => %{
         "show-notes" => %{
           "data" => [%{ "type" => "show-notes", "id" => "#{show_note.id}" }]
+        },
+        "guests" => %{
+          "data" => [%{ "type" => "people", "id" => "#{person.id}" }]
         }
       }
     }
@@ -135,6 +154,13 @@ defmodule EmberWeekendApi.EpisodeControllerTest do
         "episode"  => %{ "data" => %{ "type" => "episodes",  "id" => "#{episode.id}"  } }
       },
       "type" => "show-notes"
+    },%{
+      "attributes" => @valid_person_attrs
+                    |> string_keys
+                    |> dasherize_keys,
+      "id" => "#{person.id}",
+      "links" => %{"self" => "/api/people/#{person.id}"},
+      "type" => "people"
     }]
   end
 
@@ -226,10 +252,19 @@ defmodule EmberWeekendApi.EpisodeControllerTest do
 
   test "admin user can create episode", %{conn: conn} do
     conn = admin(conn)
+    person = Repo.insert! Map.merge(%Person{}, @valid_person_attrs)
     attributes = @valid_attrs
       |> Map.delete(:release_date)
       |> Map.merge(%{"release-date": "2013-12-15"})
-    data = %{data: %{type: "episodes", attributes: attributes}}
+    data = %{
+      data: %{
+        type: "episodes",
+        attributes: attributes,
+        relationships: %{
+          guests: %{ data: [%{ type: "people", id: "#{person.id}" }] }
+        }
+      }
+    }
 
     conn = post conn, episode_path(conn, :create), data
 
@@ -238,10 +273,18 @@ defmodule EmberWeekendApi.EpisodeControllerTest do
     assert json_api_response(conn)["data"] == %{
       "id" => "#{episode_id}",
       "type" => "episodes",
-      "attributes" => string_keys(attributes),
+      "attributes" => attributes
+                      |> string_keys
+                      |> dasherize_keys
+                      |> convert_dates,
       "relationships" => %{
         "show-notes" => %{
           "data" => []
+        },
+        "guests" => %{
+          "data" => [
+            %{"type" => "people", "id" => "#{person.id}"}
+          ]
         }
       }
     }

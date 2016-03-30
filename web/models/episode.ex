@@ -1,6 +1,8 @@
 defmodule EmberWeekendApi.Episode do
   use EmberWeekendApi.Web, :model
   alias EmberWeekendApi.ShowNote
+  alias EmberWeekendApi.Person
+  alias EmberWeekendApi.EpisodeGuest
 
   schema "episodes" do
     field :number, :integer
@@ -11,6 +13,8 @@ defmodule EmberWeekendApi.Episode do
     field :filename, :string
     field :duration, :string
     has_many :show_notes, ShowNote
+    has_many :episode_guests, EpisodeGuest
+    has_many :guests, through: [:episode_guests, :guest]
 
     timestamps
   end

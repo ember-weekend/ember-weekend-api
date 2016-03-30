@@ -3,6 +3,7 @@ defmodule EmberWeekendApi.EpisodeController do
   import EmberWeekendApi.Auth
   import EmberWeekendApi.ControllerErrors
   alias EmberWeekendApi.Episode
+  alias EmberWeekendApi.EpisodeGuest
 
   plug :model_name, :episode
   plug :authenticate, :admin when action in [:create, :update, :delete]
@@ -16,7 +17,7 @@ defmodule EmberWeekendApi.EpisodeController do
     case find_by_slug_or_id(id) do
       nil -> not_found(conn)
       episode -> render(conn, data: episode, opts: [
-        include: "show_notes,show_notes.resources,show_notes.resources.authors"
+        include: "show_notes,guests"
       ])
     end
   end
@@ -28,10 +29,23 @@ defmodule EmberWeekendApi.EpisodeController do
     end
   end
 
-  def create(conn, %{"data" => data}) do
-    changeset = Episode.changeset(%Episode{}, data["attributes"])
+  defp extract_relationship_ids(relationships, name) do
+    Enum.map(relationships[name]["data"], fn(a) ->
+      Integer.parse(a["id"])
+      |> elem(0)
+    end)
+  end
+
+  def create(conn, %{"data" => %{ "relationships" => relationships, "attributes" => attributes}}) do
+    changeset = Episode.changeset(%Episode{}, attributes)
     case Repo.insert(changeset) do
       {:ok, episode} ->
+        guest_ids = extract_relationship_ids(relationships, "guests")
+        Enum.each guest_ids, fn(id) ->
+          attributes = %{episode_id: episode.id, guest_id: id}
+          changeset = EpisodeGuest.changeset(%EpisodeGuest{}, attributes)
+          Repo.insert(changeset)
+        end
         conn
         |> put_status(:created)
         |> render(:show, data: episode)
@@ -40,6 +54,9 @@ defmodule EmberWeekendApi.EpisodeController do
         |> put_status(:unprocessable_entity)
         |> render(:errors, data: changeset)
     end
+  end
+  def create(conn, %{"data" => %{"attributes" => attributes}}) do
+    create conn, %{"data" => %{ "relationships" => [], "attributes" => attributes}}
   end
 
   def update(conn, %{"data" => data, "id" => id}) do

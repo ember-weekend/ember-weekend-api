@@ -42,6 +42,7 @@ defmodule EmberWeekendApi.Mixfile do
      {:json, "~> 0.3.0"},
      {:timex, "~> 1.0.2"},
      {:timex_ecto, "~> 0.9.0"},
+     {:corsica, "~> 0.4"},
      {:ja_serializer, github: "AgilionApps/ja_serializer", ref: "eafd98a"}]
   end
 

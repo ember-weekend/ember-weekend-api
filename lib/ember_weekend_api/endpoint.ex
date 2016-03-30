@@ -36,5 +36,6 @@ defmodule EmberWeekendApi.Endpoint do
     key: "_ember_weekend_api_key",
     signing_salt: "Z63alZTm"
 
+  plug Corsica, origins: "*"
   plug EmberWeekendApi.Router
 end

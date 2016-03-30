@@ -1,6 +1,7 @@
 %{"certifi": {:hex, :certifi, "0.3.0"},
   "combine": {:hex, :combine, "0.7.0"},
   "connection": {:hex, :connection, "1.0.2"},
+  "corsica": {:hex, :corsica, "0.4.1"},
   "cowboy": {:hex, :cowboy, "1.0.4"},
   "cowlib": {:hex, :cowlib, "1.0.2"},
   "db_connection": {:hex, :db_connection, "0.2.4"},

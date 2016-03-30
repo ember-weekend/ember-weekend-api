@@ -4,7 +4,7 @@ defmodule EmberWeekendApi.PersonView do
   alias EmberWeekendApi.Person
 
   location "/api/people/:id"
-  attributes [:name, :handle, :url, :avatar_url]
+  attributes [:name, :handle, :url, :avatar_url, :tagline]
 
   def type, do: "people"
 

@@ -5,6 +5,7 @@ defmodule EmberWeekendApi.PersonControllerTest do
   @valid_attrs %{
     name: "Jerry Smith",
     handle: "dr_pluto",
+    tagline: "Well look where being smart got you.",
     url: "http://rickandmorty.wikia.com/wiki/Jerry_Smith",
     avatar_url: "http://vignette3.wikia.nocookie.net/rickandmorty/images/5/5d/Jerry_S01E11_Sad.JPG/revision/latest?cb=20140501090439"
   }

@@ -3,7 +3,13 @@ defmodule EmberWeekendApi.PersonTest do
 
   alias EmberWeekendApi.Person
 
-  @valid_attrs %{avatar_url: "some content", handle: "some content", name: "some content", url: "some content"}
+  @valid_attrs %{
+    avatar_url: "some content",
+    tagline: "some content",
+    handle: "some content",
+    name: "some content",
+    url: "some content"
+  }
   @invalid_attrs %{}
 
   test "changeset with valid attributes" do

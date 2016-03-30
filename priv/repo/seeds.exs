@@ -15,8 +15,10 @@ alias EmberWeekendApi.Person
 alias EmberWeekendApi.Resource
 alias EmberWeekendApi.ResourceAuthor
 alias EmberWeekendApi.ShowNote
+alias EmberWeekendApi.EpisodeGuest
 
 Repo.delete_all(ShowNote)
+Repo.delete_all(EpisodeGuest)
 Repo.delete_all(Episode)
 Repo.delete_all(ResourceAuthor)
 Repo.delete_all(Person)
@@ -76,5 +78,11 @@ Repo.delete_all(Resource)
     resource_id: (Repo.all(Resource) |> List.first).id,
     episode_id: (Repo.all(Episode) |> List.first).id,
     time_stamp: "01:12"
+  }
+] |> Enum.each(&Repo.insert!(&1))
+
+[%EpisodeGuest{
+    episode_id: (Repo.all(Episode) |> List.first).id,
+    guest_id: (Repo.all(Person) |> List.first).id
   }
 ] |> Enum.each(&Repo.insert!(&1))

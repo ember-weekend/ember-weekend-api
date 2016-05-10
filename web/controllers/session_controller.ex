@@ -13,7 +13,9 @@ defmodule EmberWeekendApi.SessionController do
           {:ok, %{user: _, session: session}} ->
             conn
             |> put_status(:created)
-            |> render(:show, data: session)
+            |> render(:show, data: session, opts: [
+              include: "user"
+            ])
           {:error, errors} ->
             conn
             |> put_status(:unprocessable_entity)

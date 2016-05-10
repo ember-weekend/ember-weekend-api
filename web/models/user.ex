@@ -1,11 +1,13 @@
 defmodule EmberWeekendApi.User do
   use EmberWeekendApi.Web, :model
   alias EmberWeekendApi.LinkedAccount
+  alias EmberWeekendApi.Session
 
   schema "users" do
     field :name, :string
     field :username, :string
     has_many :linked_accounts, LinkedAccount
+    has_many :sessions, Session
 
     timestamps
   end

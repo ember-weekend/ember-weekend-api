@@ -6,14 +6,13 @@ defmodule EmberWeekendApi.SessionView do
   attributes [:token]
 
   has_one :user,
-    field: :user,
     type: "users",
     serializer: UserView,
-    include: true
+    include: false
 
   def type, do: "sessions"
 
-  def user(model, conn) do
+  def user(model, _conn) do
     case model.user do
       %Ecto.Association.NotLoaded{} ->
         model

@@ -36,11 +36,17 @@ defmodule EmberWeekendApi.ShowNoteController do
     end
   end
 
-  def update(conn, %{"data" => data, "id" => id}) do
+  def update(conn, %{"data" => %{"relationships" => relationships, "attributes" => attributes}, "id" => id}) do
+    {episode_id,_} = Integer.parse(relationships["episode"]["data"]["id"])
+    {resource_id,_} = Integer.parse(relationships["resource"]["data"]["id"])
+    attributes = Map.merge(attributes, %{
+      "resource_id" => resource_id,
+      "episode_id" => episode_id
+    })
     case Repo.get(ShowNote, id) do
       nil -> not_found(conn)
       show_note ->
-        changeset = ShowNote.changeset(show_note, data["attributes"])
+        changeset = ShowNote.changeset(show_note, attributes)
         case Repo.update(changeset) do
           {:ok, show_note} -> render(conn, :show, data: show_note)
           {:error, changeset} ->

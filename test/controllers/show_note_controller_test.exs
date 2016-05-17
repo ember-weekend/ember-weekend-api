@@ -166,4 +166,46 @@ defmodule EmberWeekendApi.ShowNoteControllerTest do
     assert Repo.get!(ShowNote, show_note_id)
   end
 
+  test "admin user can update show note relationships", %{conn: conn} do
+    conn = admin(conn)
+    person = Repo.insert! Map.merge(%Person{}, @valid_person_attrs)
+    resource1 = Repo.insert! Map.merge(%Resource{}, @valid_resource_attrs)
+    resource2 = Repo.insert! Map.merge(%Resource{}, @valid_resource_attrs)
+    Repo.insert! %ResourceAuthor{resource_id: resource1.id, author_id: person.id}
+    Repo.insert! %ResourceAuthor{resource_id: resource2.id, author_id: person.id}
+    episode1 = Repo.insert! Map.merge(%Episode{}, @valid_episode_attrs)
+    episode2 = Repo.insert! Map.merge(%Episode{}, @valid_episode_attrs)
+    show_note = Repo.insert! Map.merge(%ShowNote{episode_id: episode1.id, resource_id: resource1.id}, @valid_attrs)
+
+    updated_attrs = %{time_stamp: "10:00"}
+    data = %{
+      data: %{
+        type: "show-notes",
+        attributes: updated_attrs,
+        relationships: %{
+          "resource" => %{ "data" => %{ "type" => "resources", "id" => "#{resource2.id}" } },
+          "episode"  => %{ "data" => %{ "type" => "episodes",  "id" => "#{episode2.id}"  } }
+        }
+      }
+    }
+
+    conn = put conn, show_note_path(conn, :update, show_note), data
+
+    assert conn.status == 200
+    show_note_id = String.to_integer json_api_response(conn)["data"]["id"]
+    assert json_api_response(conn)["data"] == %{
+      "id" => "#{show_note_id}",
+      "type" => "show-notes",
+      "links" => %{"self" => "/api/show-notes/#{show_note_id}"},
+      "attributes" => updated_attrs
+                    |> string_keys
+                    |> dasherize_keys,
+      "relationships" => %{
+        "resource" => %{ "data" => %{ "type" => "resources", "id" => "#{resource2.id}" } },
+        "episode"  => %{ "data" => %{ "type" => "episodes",  "id" => "#{episode2.id}"  } }
+      }
+    }
+    assert Repo.all(ShowNote) |> Enum.count == 1
+    assert Repo.get!(ShowNote, show_note_id)
+  end
 end

@@ -208,4 +208,18 @@ defmodule EmberWeekendApi.ShowNoteControllerTest do
     assert Repo.all(ShowNote) |> Enum.count == 1
     assert Repo.get!(ShowNote, show_note_id)
   end
+
+  test "admin user can delete show note", %{conn: conn} do
+    conn = admin(conn)
+    person = Repo.insert! Map.merge(%Person{}, @valid_person_attrs)
+    resource = Repo.insert! Map.merge(%Resource{}, @valid_resource_attrs)
+    Repo.insert! %ResourceAuthor{resource_id: resource.id, author_id: person.id}
+    episode = Repo.insert! Map.merge(%Episode{}, @valid_episode_attrs)
+    show_note = Repo.insert! Map.merge(%ShowNote{episode_id: episode.id, resource_id: resource.id}, @valid_attrs)
+
+    conn = delete conn, show_note_path(conn, :update, show_note)
+
+    assert conn.status == 204
+    assert Repo.all(ShowNote) |> Enum.count() == 0
+  end
 end

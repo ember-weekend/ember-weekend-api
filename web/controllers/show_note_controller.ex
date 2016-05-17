@@ -56,4 +56,13 @@ defmodule EmberWeekendApi.ShowNoteController do
         end
     end
   end
+
+  def delete(conn, %{"id" => id}) do
+    case Repo.get(ShowNote, id) do
+      nil -> not_found(conn)
+      show_note ->
+        Repo.delete!(show_note)
+        send_resp(conn, :no_content, "")
+    end
+  end
 end

@@ -35,4 +35,19 @@ defmodule EmberWeekendApi.ShowNoteController do
         |> render(:errors, data: changeset)
     end
   end
+
+  def update(conn, %{"data" => data, "id" => id}) do
+    case Repo.get(ShowNote, id) do
+      nil -> not_found(conn)
+      show_note ->
+        changeset = ShowNote.changeset(show_note, data["attributes"])
+        case Repo.update(changeset) do
+          {:ok, show_note} -> render(conn, :show, data: show_note)
+          {:error, changeset} ->
+            conn
+            |> put_status(:unprocessable_entity)
+            |> render(:errors, data: changeset)
+        end
+    end
+  end
 end

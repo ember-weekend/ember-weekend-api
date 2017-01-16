@@ -37,6 +37,8 @@ config :ember_weekend_api, EmberWeekendApi.Repo,
   adapter: Ecto.Adapters.Postgres,
   database: "ember_weekend_api_dev",
   hostname: "localhost",
+  username: "postgres",
+  password: "postgres",
   pool_size: 10
 
 config :ember_weekend_api, :github_api, EmberWeekendApi.Github.HTTPClient

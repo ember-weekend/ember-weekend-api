@@ -8,6 +8,10 @@ defmodule EmberWeekendApi.ErrorView do
     %{errors: [%{detail: "Internal server error"}]}
   end
 
+  def render("errors.json-api", %{errors: errors}) do
+    %{errors: errors}
+  end
+
   def template_not_found(_template, assigns) do
     render "500.json-api", assigns
   end

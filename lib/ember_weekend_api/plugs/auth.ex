@@ -15,8 +15,9 @@ defmodule EmberWeekendApi.Plugs.Auth do
         case Repo.get_by(Session, token: token) do
           nil ->
             conn
+            |> put_view(EmberWeekendApi.ErrorView)
             |> put_status(:unauthorized)
-            |> render(:errors, data: [%{
+            |> render(:errors, errors: [%{
               status: "401",
               source: %{pointer: "/token"},
               title: "Unauthorized",

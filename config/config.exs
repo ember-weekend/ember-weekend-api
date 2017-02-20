@@ -30,6 +30,6 @@ config :phoenix, :generators,
   migration: true,
   binary_id: false
 
-config :plug, :mimes, %{
+config :mime, :types, %{
   "application/vnd.api+json" => ["json-api"]
 }

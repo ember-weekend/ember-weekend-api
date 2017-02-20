@@ -23,7 +23,7 @@ defmodule EmberWeekendApi.Plugs.URLFormat do
   end
 
   defp format_to_mime(format) do
-    mimes = Application.get_env(:plug, :mimes)
+    mimes = Application.get_env(:mime, :types)
     Map.values(mimes) |> Enum.find_index(fn(m) -> m == [format] end) |> case do
       nil -> nil
       index ->

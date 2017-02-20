@@ -5,8 +5,6 @@ defmodule EmberWeekendApi.ShowNoteController do
 
   alias EmberWeekendApi.ShowNote
   alias EmberWeekendApi.Repo
-  alias EmberWeekendApi.Episode
-  alias EmberWeekendApi.Resource
 
   plug :model_name, :show_note
   plug :authenticate, :admin when action in [:create, :update, :delete]

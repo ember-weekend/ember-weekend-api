@@ -1,9 +1,6 @@
 defmodule EmberWeekendApi.ShowNoteView do
   use EmberWeekendApi.Web, :view
   use JaSerializer.PhoenixView
-  alias EmberWeekendApi.ShowNote
-  alias EmberWeekendApi.Episode
-  alias EmberWeekendApi.Resource
   alias EmberWeekendApi.ResourceView
   alias EmberWeekendApi.EpisodeView
 

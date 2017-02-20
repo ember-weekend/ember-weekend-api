@@ -1,5 +1,4 @@
 defmodule EmberWeekendApi.Plugs.URLFormat do
-  import Plug.Conn
 
   def init(default), do: default
 

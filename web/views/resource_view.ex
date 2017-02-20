@@ -2,7 +2,6 @@ defmodule EmberWeekendApi.ResourceView do
   use EmberWeekendApi.Web, :view
   use JaSerializer.PhoenixView
   alias EmberWeekendApi.PersonView
-  alias EmberWeekendApi.Resource
 
   location "/api/resources/:id"
   attributes [:title, :url]

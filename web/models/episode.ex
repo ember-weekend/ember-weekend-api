@@ -1,7 +1,6 @@
 defmodule EmberWeekendApi.Episode do
   use EmberWeekendApi.Web, :model
   alias EmberWeekendApi.ShowNote
-  alias EmberWeekendApi.Person
   alias EmberWeekendApi.EpisodeGuest
 
   schema "episodes" do

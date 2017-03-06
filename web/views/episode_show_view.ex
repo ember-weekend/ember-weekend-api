@@ -19,7 +19,7 @@ defmodule EmberWeekendApi.EpisodeShowView do
   def type, do: "episodes"
 
   def release_date(episode, _conn) do
-    {:ok, date} = Timex.Date.from(episode.release_date)
+    {:ok, date} = episode.release_date
       |> Timex.Format.DateTime.Formatter.format("%Y-%m-%d", :strftime)
     date
   end

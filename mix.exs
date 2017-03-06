@@ -19,7 +19,7 @@ defmodule EmberWeekendApi.Mixfile do
   def application do
     [mod: {EmberWeekendApi, []},
      applications: [:phoenix, :phoenix_html, :cowboy, :logger, :gettext,
-                    :phoenix_ecto, :postgrex, :httpoison, :timex]]
+                    :phoenix_ecto, :postgrex, :httpoison, :timex, :timex_ecto, :tzdata]]
   end
 
   # Specifies which paths to compile per environment.
@@ -40,8 +40,8 @@ defmodule EmberWeekendApi.Mixfile do
      {:httpoison, "~> 0.8.1"},
      {:secure_random, "~>0.2"},
      {:json, "~> 0.3.0"},
-     {:timex, "~> 2.1"},
-     {:timex_ecto, "~> 1.1"},
+     {:timex, "~> 3.1"},
+     {:timex_ecto, "~> 3.1"},
      {:corsica, "~> 0.4"},
      {:ja_serializer, "~> 0.12.0"}]
   end

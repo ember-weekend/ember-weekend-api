@@ -14,6 +14,13 @@ defmodule EmberWeekendApi.ShowNoteController do
     render(conn, data: show_notes, opts: [include: "resource,resource.authors"])
   end
 
+  def show(conn, %{"id" => id}) do
+    case Repo.get(ShowNote, id) do
+      nil -> not_found(conn)
+      show_note -> render(conn, data: show_note)
+    end
+  end
+
   def create(conn, %{"data" => %{ "relationships" => relationships, "attributes" => attributes}}) do
     {episode_id,_} = Integer.parse(relationships["episode"]["data"]["id"])
     {resource_id,_} = Integer.parse(relationships["resource"]["data"]["id"])

@@ -1,8 +1,20 @@
-defmodule EmberWeekendApi.EpisodeView do
+defmodule EmberWeekendApi.EpisodeShowView do
   use EmberWeekendApi.Web, :view
   use JaSerializer.PhoenixView
+  alias EmberWeekendApi.ShowNoteView
+  alias EmberWeekendApi.PersonView
 
   attributes [:number, :title, :description, :slug, :release_date, :filename, :duration]
+
+  has_many :show_notes,
+    type: "show-notes",
+    serializer: ShowNoteView,
+    include: false
+
+  has_many :guests,
+    type: "people",
+    serializer: PersonView,
+    include: false
 
   def type, do: "episodes"
 

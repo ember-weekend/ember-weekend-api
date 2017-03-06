@@ -16,7 +16,10 @@ defmodule EmberWeekendApi.EpisodeController do
   def show(conn, %{"id" => id}) do
     case find_by_slug_or_id(id) do
       nil -> not_found(conn)
-      episode -> render(conn, data: episode, opts: [
+      episode ->
+        conn
+        |> put_view(EmberWeekendApi.EpisodeShowView)
+        |> render(:show, data: episode, opts: [
         include: "show_notes,show_notes.resource,show_notes.resource.authors,guests"
       ])
     end
@@ -47,6 +50,7 @@ defmodule EmberWeekendApi.EpisodeController do
           Repo.insert(changeset)
         end
         conn
+        |> put_view(EmberWeekendApi.EpisodeShowView)
         |> put_status(:created)
         |> render(:show, data: episode)
       {:error, changeset} ->
@@ -65,7 +69,10 @@ defmodule EmberWeekendApi.EpisodeController do
       episode ->
         changeset = Episode.changeset(episode, data["attributes"])
         case Repo.update(changeset) do
-          {:ok, episode} -> render(conn, :show, data: episode)
+          {:ok, episode} ->
+            conn
+            |> put_view(EmberWeekendApi.EpisodeShowView)
+            |> render(:show, data: episode)
           {:error, changeset} ->
             conn
             |> put_status(:unprocessable_entity)

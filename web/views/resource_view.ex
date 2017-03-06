@@ -17,7 +17,7 @@ defmodule EmberWeekendApi.ResourceView do
     case model.authors do
       %Ecto.Association.NotLoaded{} ->
         model
-        |> Ecto.Model.assoc(:authors)
+        |> Ecto.assoc(:authors)
         |> EmberWeekendApi.Repo.all
       other -> other
     end

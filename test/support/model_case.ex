@@ -26,8 +26,11 @@ defmodule EmberWeekendApi.ModelCase do
   end
 
   setup tags do
+
+    :ok = Ecto.Adapters.SQL.Sandbox.checkout(EmberWeekendApi.Repo)
+
     unless tags[:async] do
-      Ecto.Adapters.SQL.restart_test_transaction(EmberWeekendApi.Repo, [])
+      Ecto.Adapters.SQL.Sandbox.mode(EmberWeekendApi.Repo, {:shared, self()})
     end
 
     :ok

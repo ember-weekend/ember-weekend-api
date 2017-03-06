@@ -23,7 +23,7 @@ defmodule EmberWeekendApi.Auth do
     case user.linked_accounts do
       %Ecto.Association.NotLoaded{} ->
         user
-        |> Ecto.Model.assoc(:linked_accounts)
+        |> Ecto.assoc(:linked_accounts)
         |> EmberWeekendApi.Repo.all
       other -> other
     end

@@ -15,7 +15,7 @@ defmodule EmberWeekendApi.SessionView do
     case model.user do
       %Ecto.Association.NotLoaded{} ->
         model
-        |> Ecto.Model.assoc(:user)
+        |> Ecto.assoc(:user)
         |> EmberWeekendApi.Repo.one
       other -> other
     end

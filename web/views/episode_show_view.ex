@@ -20,7 +20,7 @@ defmodule EmberWeekendApi.EpisodeShowView do
 
   def release_date(episode, _conn) do
     {:ok, date} = Timex.Date.from(episode.release_date)
-      |> Timex.DateFormat.format("%Y-%m-%d", :strftime)
+      |> Timex.Format.DateTime.Formatter.format("%Y-%m-%d", :strftime)
     date
   end
 
@@ -28,7 +28,7 @@ defmodule EmberWeekendApi.EpisodeShowView do
     case model.show_notes do
       %Ecto.Association.NotLoaded{} ->
         model
-        |> Ecto.Model.assoc(:show_notes)
+        |> Ecto.assoc(:show_notes)
         |> EmberWeekendApi.Repo.all
       other -> other
     end
@@ -38,7 +38,7 @@ defmodule EmberWeekendApi.EpisodeShowView do
     case model.guests do
       %Ecto.Association.NotLoaded{} ->
         model
-        |> Ecto.Model.assoc(:guests)
+        |> Ecto.assoc(:guests)
         |> EmberWeekendApi.Repo.all
       other -> other
     end

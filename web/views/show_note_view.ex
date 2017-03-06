@@ -23,7 +23,7 @@ defmodule EmberWeekendApi.ShowNoteView do
     case model.resource do
       %Ecto.Association.NotLoaded{} ->
         model
-        |> Ecto.Model.assoc(:resource)
+        |> Ecto.assoc(:resource)
         |> EmberWeekendApi.Repo.one
       other -> other
     end
@@ -33,7 +33,7 @@ defmodule EmberWeekendApi.ShowNoteView do
     case model.episode do
       %Ecto.Association.NotLoaded{} ->
         model
-        |> Ecto.Model.assoc(:episode)
+        |> Ecto.assoc(:episode)
         |> EmberWeekendApi.Repo.one
       other -> other
     end

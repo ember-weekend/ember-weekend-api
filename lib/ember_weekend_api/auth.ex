@@ -8,7 +8,7 @@ defmodule EmberWeekendApi.Auth do
         |> linked_accounts
         |> Enum.map(fn(account) -> account.username end)
         |> Enum.map_reduce(false, fn(username, admin) ->
-          is_admin = Enum.member?(admin_usernames, username)
+          is_admin = Enum.member?(admin_usernames(), username)
           { is_admin, admin || is_admin }
         end)
         |> elem(1)

@@ -33,7 +33,7 @@ defmodule EmberWeekendApi.ChannelCase do
 
   setup tags do
     unless tags[:async] do
-      Ecto.Adapters.SQL.restart_test_transaction(EmberWeekendApi.Repo, [])
+      Ecto.Adapters.SQL.Sandbox.checkout(EmberWeekendApi.Repo)
     end
 
     :ok

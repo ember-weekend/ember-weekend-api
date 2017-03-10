@@ -8,11 +8,11 @@ defmodule EmberWeekendApi.Resource do
     has_many :resource_authors, ResourceAuthor
     has_many :authors, through: [:resource_authors, :author]
 
-    timestamps
+    timestamps()
   end
 
-  @required_fields ~w(title url)
-  @optional_fields ~w()
+  @required_fields ~w(title url)a
+  @optional_fields ~w()a
 
   @doc """
   Creates a changeset based on the `model` and `params`.
@@ -22,6 +22,7 @@ defmodule EmberWeekendApi.Resource do
   """
   def changeset(model, params \\ %{}) do
     model
-    |> cast(params, @required_fields, @optional_fields)
+    |> cast(params, @optional_fields ++ @required_fields)
+    |> validate_required(@required_fields)
   end
 end

@@ -15,20 +15,21 @@ defmodule EmberWeekendApi.Episode do
     has_many :episode_guests, EpisodeGuest
     has_many :guests, through: [:episode_guests, :guest]
 
-    timestamps
+    timestamps()
   end
 
-  @required_fields ~w(number title description slug release_date filename duration)
-  @optional_fields ~w()
+  @required_fields ~w(number title description slug release_date filename duration)a
+  @optional_fields ~w()a
 
   @doc """
-  Creates a changeset based on the `model` and `params`.
+  Creates a changeset based on the `struct` and `params`.
 
   If no params are provided, an invalid changeset is returned
   with no validation performed.
   """
-  def changeset(model, params \\ %{}) do
-    model
-    |> cast(params, @required_fields, @optional_fields)
+  def changeset(struct, params \\ %{}) do
+    struct
+    |> cast(params, @optional_fields ++ @required_fields)
+    |> validate_required(@required_fields)
   end
 end

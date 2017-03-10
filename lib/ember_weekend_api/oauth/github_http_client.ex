@@ -2,13 +2,13 @@ defmodule EmberWeekendApi.Github.HTTPClient do
 
   def get_access_token(code, state) do
     body = {:form, [
-        client_id: client_id, redirect_uri: redirect_uri,
-        code: code, client_secret: client_secret, state: state]}
+        client_id: client_id(), redirect_uri: redirect_uri(),
+        code: code, client_secret: client_secret(), state: state]}
     headers = %{
       "Content-type" => "application/x-www-form-urlencoded",
       "Accept" => "application/json"
     }
-    case HTTPoison.post(access_token_url, body, headers) do
+    case HTTPoison.post(access_token_url(), body, headers) do
       {:ok, %HTTPoison.Response{body: body}} ->
         case JSON.decode(body) do
           {:ok, %{"access_token" => access_token}} ->

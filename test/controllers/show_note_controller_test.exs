@@ -8,8 +8,6 @@ defmodule EmberWeekendApi.ShowNoteControllerTest do
 
   @valid_attrs %{time_stamp: "01:14"}
 
-  @invalid_attrs %{}
-
   @valid_resource_attrs %{
     title: "Plumbuses",
     url: "http://rickandmorty.wikia.com/wiki/Plumbus"

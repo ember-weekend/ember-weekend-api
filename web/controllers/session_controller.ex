@@ -103,7 +103,7 @@ defmodule EmberWeekendApi.SessionController do
   end
 
   defp find_or_create_linked_account(user, attrs, access_token, provider) do
-    case Repo.get_by(LinkedAccount, access_token: access_token, provider: provider) do
+    case Repo.get_by(LinkedAccount, user_id: user.id, provider: provider) do
       nil ->
         changeset = LinkedAccount.changeset(%LinkedAccount{}, %{
           username: attrs[:username],

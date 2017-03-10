@@ -24,11 +24,15 @@ defmodule EmberWeekendApi.SessionControllerTest do
   }
   @github_user    %{"name" => "Rick Sanchez", "username" => "tinyrick"}
 
-  setup %{conn: conn} do
+  defp setup_conn(conn) do
     conn = conn
       |> put_req_header("accept", "application/vnd.api+json")
       |> put_req_header("content-type", "application/vnd.api+json")
     {:ok, conn: conn}
+  end
+
+  setup %{conn: conn} do
+    setup_conn conn
   end
 
   test "if not present, creates a user for the github account", %{conn: conn} do
@@ -65,7 +69,9 @@ defmodule EmberWeekendApi.SessionControllerTest do
   test "signs in existing user with linked github account", %{conn: conn} do
     user = Repo.insert! User.changeset %User{}, @github_user
     Repo.insert! LinkedAccount.changeset %LinkedAccount{
-      user_id: user.id
+      user_id: user.id,
+      provider: "github",
+      provider_id: "1"
     }, @valid_linked
 
     conn = post conn, session_path(conn, :create), @valid_params
@@ -89,6 +95,11 @@ defmodule EmberWeekendApi.SessionControllerTest do
 
     session = Repo.all(Session) |> List.first
     assert session.user_id == user.id
+
+    conn = build_conn()
+    {:ok, conn: conn} = setup_conn conn
+    conn = post conn, session_path(conn, :create), @valid_params
+    assert conn.status == 201
   end
 
   test "signs in existing user and links github account", %{conn: conn} do

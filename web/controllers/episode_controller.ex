@@ -4,6 +4,7 @@ defmodule EmberWeekendApi.EpisodeController do
   import EmberWeekendApi.ControllerErrors
   alias EmberWeekendApi.Episode
   alias EmberWeekendApi.EpisodeGuest
+  alias Ecto.Multi
 
   plug :model_name, :episode
   plug :authenticate, :admin when action in [:create, :update, :delete]
@@ -33,10 +34,13 @@ defmodule EmberWeekendApi.EpisodeController do
   end
 
   defp extract_relationship_ids(relationships, name) do
-    Enum.map(relationships[name]["data"], fn(a) ->
-      Integer.parse(a["id"])
-      |> elem(0)
-    end)
+    case relationships[name]["data"] do
+      nil -> []
+      data -> Enum.map(data, fn(a) ->
+                Integer.parse(a["id"])
+                |> elem(0)
+              end)
+    end
   end
 
   def create(conn, %{"data" => %{ "relationships" => relationships, "attributes" => attributes}}) do
@@ -62,25 +66,36 @@ defmodule EmberWeekendApi.EpisodeController do
     end
   end
   def create(conn, %{"data" => %{"attributes" => attributes}}) do
-    create conn, %{"data" => %{ "relationships" => [], "attributes" => attributes}}
+    create conn, %{"data" => %{ "relationships" => %{}, "attributes" => attributes}}
   end
 
-  def update(conn, %{"data" => data, "id" => id}) do
+  def update(conn, %{"data" => %{ "relationships" => relationships, "attributes" => attributes}, "id" => id}) do
     case Repo.get(Episode, id) do
       nil -> not_found(conn)
       episode ->
-        changeset = Episode.changeset(episode, data["attributes"])
-        case Repo.update(changeset) do
-          {:ok, episode} ->
+        changeset = Episode.changeset(episode, attributes)
+        guest_ids = extract_relationship_ids(relationships, "guests")
+
+        multi = Multi.new
+        |> Multi.update(:episode, changeset)
+        |> Multi.run(:set_episode_guests, fn(%{episode: episode}) ->
+          set_episode_guests(%{episode: episode, guest_ids: guest_ids })
+        end)
+
+        case Repo.transaction(multi) do
+          {:ok, result} ->
             conn
             |> put_view(EmberWeekendApi.EpisodeShowView)
-            |> render(:show, data: episode)
-          {:error, changeset} ->
+            |> render(:show, data: result.episode)
+          {:error, _, changeset, %{}} ->
             conn
             |> put_status(:unprocessable_entity)
             |> render(:errors, data: changeset)
         end
     end
+  end
+  def update(conn, %{"data" => %{"attributes" => attributes}, "id" => id}) do
+    update conn, %{"data" => %{ "relationships" => %{}, "attributes" => attributes}, "id" => id}
   end
 
   def delete(conn, %{"id" => id}) do
@@ -92,4 +107,26 @@ defmodule EmberWeekendApi.EpisodeController do
     end
   end
 
+  defp set_episode_guests(%{episode: episode, guest_ids: guest_ids}) do
+    query = from eg in EpisodeGuest,
+              where: eg.episode_id == ^episode.id,
+              select: eg.guest_id
+    existing_guest_ids = Repo.all(query)
+
+    new_episode_guests = guest_ids -- existing_guest_ids
+    remove_episode_guests = existing_guest_ids -- guest_ids
+
+    multi = Enum.reduce(new_episode_guests, Multi.new, fn(id, multi) ->
+      attributes = %{guest_id: id, episode_id: episode.id}
+      changeset = EpisodeGuest.changeset(%EpisodeGuest{}, attributes)
+      Multi.insert(multi, id, changeset)
+    end)
+
+    query = from eg in EpisodeGuest,
+              where: eg.episode_id == ^episode.id and eg.guest_id in ^remove_episode_guests
+
+    multi
+    |> Multi.delete_all(:delete_episode_guests, query)
+    |> Repo.transaction()
+  end
 end

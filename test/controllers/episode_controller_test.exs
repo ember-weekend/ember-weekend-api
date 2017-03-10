@@ -54,15 +54,7 @@ defmodule EmberWeekendApi.EpisodeControllerTest do
       "attributes" => @valid_attrs
                       |> string_keys
                       |> dasherize_keys
-                      |> convert_dates,
-      "relationships" => %{
-        "guests" => %{
-          "data" => []
-        },
-        "show-notes" => %{
-          "data" => []
-        }
-      }
+                      |> convert_dates
     }]
   end
 

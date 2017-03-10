@@ -20,8 +20,8 @@ defmodule EmberWeekendApi.EpisodeController do
         conn
         |> put_view(EmberWeekendApi.EpisodeShowView)
         |> render(:show, data: episode, opts: [
-        include: "show_notes,show_notes.resource,show_notes.resource.authors,guests"
-      ])
+          include: "show_notes,show_notes.resource,show_notes.resource.authors,guests"
+        ])
     end
   end
 
@@ -52,7 +52,9 @@ defmodule EmberWeekendApi.EpisodeController do
         conn
         |> put_view(EmberWeekendApi.EpisodeShowView)
         |> put_status(:created)
-        |> render(:show, data: episode)
+        |> render(:show, data: episode, opts: [
+          include: "show_notes,show_notes.resource,show_notes.resource.authors,guests"
+        ])
       {:error, changeset} ->
         conn
         |> put_status(:unprocessable_entity)

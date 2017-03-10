@@ -17,7 +17,9 @@ defmodule EmberWeekendApi.ResourceController do
   def show(conn, %{"id" => id}) do
     case Repo.get(Resource, id) do
       nil -> not_found(conn)
-      resource -> render(conn, data: resource)
+      resource -> render(conn, data: resource, opts: [
+        include: "authors"
+      ])
     end
   end
 
@@ -40,7 +42,9 @@ defmodule EmberWeekendApi.ResourceController do
         end
         conn
         |> put_status(:created)
-        |> render(:show, data: resource)
+        |> render(:show, data: resource, opts: [
+          include: "authors"
+        ])
       {:error, changeset} ->
         conn
         |> put_status(:unprocessable_entity)

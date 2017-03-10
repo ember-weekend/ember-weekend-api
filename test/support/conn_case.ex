@@ -67,8 +67,8 @@ defmodule EmberWeekendApi.ConnCase do
       def convert_dates(map) do
         for {key, val} <- map, into: %{} do
           case val do
-            %DateTime{} ->
-              {:ok, date} = Timex.Format.DateTime.Formatter.format("%Y-%m-%d", :strftime)
+            %Date{} ->
+              {:ok, date} = Timex.Format.DateTime.Formatter.format(val, "%Y-%m-%d", :strftime)
               {key, date}
             _ -> {key,val}
           end

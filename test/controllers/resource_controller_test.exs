@@ -35,9 +35,7 @@ defmodule EmberWeekendApi.ResourceControllerTest do
     assert conn.status == 200
     assert json_api_response(conn)["data"] == [%{
       "relationships" => %{
-        "authors" => %{
-          "data" => [%{ "type" => "people", "id" => "#{person.id}" }]
-        }
+        "authors" => %{}
       },
       "links" => %{"self" => "/api/resources/#{resource.id}"},
       "id" => "#{resource.id}",

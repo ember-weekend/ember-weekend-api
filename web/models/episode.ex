@@ -5,6 +5,7 @@ defmodule EmberWeekendApi.Episode do
 
   schema "episodes" do
     field :number, :integer
+    field :length, :integer
     field :title, :string
     field :description, :string
     field :slug, :string

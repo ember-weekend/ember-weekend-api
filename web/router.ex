@@ -18,4 +18,6 @@ defmodule EmberWeekendApi.Router do
     delete "/sessions/:token", SessionController, :delete
     post "/sessions", SessionController, :create
   end
+
+  get "/feed.xml", EmberWeekendApi.FeedController, :index
 end

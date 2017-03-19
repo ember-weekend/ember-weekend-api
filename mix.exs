@@ -43,6 +43,7 @@ defmodule EmberWeekendApi.Mixfile do
      {:timex, "~> 3.1"},
      {:timex_ecto, "~> 3.1"},
      {:corsica, "~> 0.4"},
+     {:feeder_ex, "~> 1.0.1"},
      {:ja_serializer, "~> 0.12.0"}]
   end
 

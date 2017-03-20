@@ -18,7 +18,7 @@ defmodule EmberWeekendApi.Mixfile do
   # Type `mix help compile.app` for more information.
   def application do
     [mod: {EmberWeekendApi, []},
-     applications: [:phoenix, :phoenix_html, :cowboy, :logger, :gettext,
+     applications: [:faker, :ex_machina, :phoenix, :phoenix_html, :cowboy, :logger, :gettext,
                     :phoenix_ecto, :postgrex, :httpoison, :timex, :timex_ecto, :tzdata]]
   end
 
@@ -44,6 +44,8 @@ defmodule EmberWeekendApi.Mixfile do
      {:timex_ecto, "~> 3.1"},
      {:corsica, "~> 0.4"},
      {:feeder_ex, "~> 1.0.1"},
+     {:ex_machina, "~> 2.0", only: :test},
+     {:faker, "~> 0.7", only: :test},
      {:ja_serializer, "~> 0.12.0"}]
   end
 

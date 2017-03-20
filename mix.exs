@@ -18,7 +18,7 @@ defmodule EmberWeekendApi.Mixfile do
   # Type `mix help compile.app` for more information.
   def application do
     [mod: {EmberWeekendApi, []},
-     applications: [:faker, :ex_machina, :phoenix, :phoenix_html, :cowboy, :logger, :gettext,
+     applications: [:phoenix, :phoenix_html, :cowboy, :logger, :gettext,
                     :phoenix_ecto, :postgrex, :httpoison, :timex, :timex_ecto, :tzdata]]
   end
 
@@ -31,9 +31,9 @@ defmodule EmberWeekendApi.Mixfile do
   # Type `mix help deps` for examples and options.
   defp deps do
     [{:phoenix, "~> 1.2"},
-     {:postgrex, ">= 0.0.0"},
+     {:postgrex, ">= 0.13.0"},
      {:phoenix_ecto, "~> 3.0"},
-     {:phoenix_html, "~> 2.4"},
+     {:phoenix_html, "~> 2.9"},
      {:phoenix_live_reload, "~> 1.0", only: :dev},
      {:gettext, "~> 0.9"},
      {:cowboy, "~> 1.0"},

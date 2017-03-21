@@ -114,7 +114,10 @@ defmodule EmberWeekendApi.EpisodeControllerTest do
                     |> dasherize_keys,
       "id" => "#{person.id}",
       "links" => %{"self" => "/api/people/#{person.id}"},
-      "type" => "people"
+      "type" => "people",
+      "relationships" => %{
+        "episodes" => %{},
+      }
     }]
   end
 
@@ -174,7 +177,10 @@ defmodule EmberWeekendApi.EpisodeControllerTest do
                     |> dasherize_keys,
       "id" => "#{person.id}",
       "links" => %{"self" => "/api/people/#{person.id}"},
-      "type" => "people"
+      "type" => "people",
+      "relationships" => %{
+        "episodes" => %{},
+      }
     }]
   end
 

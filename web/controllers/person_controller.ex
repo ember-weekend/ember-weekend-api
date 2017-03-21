@@ -16,7 +16,11 @@ defmodule EmberWeekendApi.PersonController do
   def show(conn, %{"id" => id}) do
     case Repo.get(Person, id) do
       nil -> not_found(conn)
-      person -> render(conn, data: person)
+      person ->
+        conn
+        |> render(:show, data: person, opts: [
+          include: "episodes"
+        ])
     end
   end
 

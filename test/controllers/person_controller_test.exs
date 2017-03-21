@@ -28,6 +28,9 @@ defmodule EmberWeekendApi.PersonControllerTest do
     assert json_api_response(conn)["data"] == [%{
       "id" => "#{person.id}",
       "type" => "people",
+      "relationships" => %{
+        "episodes" => %{},
+      },
       "links" => %{"self" => "/api/people/#{person.id}"},
       "attributes" => @valid_attrs
                     |> string_keys
@@ -44,6 +47,11 @@ defmodule EmberWeekendApi.PersonControllerTest do
     assert json_api_response(conn)["data"] == %{
       "id" => "#{person.id}",
       "type" => "people",
+      "relationships" => %{
+        "episodes" => %{
+          "data" => []
+        },
+      },
       "links" => %{"self" => "/api/people/#{person.id}"},
       "attributes" => @valid_attrs
                     |> string_keys
@@ -119,6 +127,9 @@ defmodule EmberWeekendApi.PersonControllerTest do
     assert json_api_response(conn)["data"] == %{
       "id" => "#{person_id}",
       "type" => "people",
+      "relationships" => %{
+        "episodes" => %{},
+      },
       "links" => %{"self" => "/api/people/#{person_id}"},
       "attributes" => string_keys(attributes)
     }

@@ -1,5 +1,6 @@
 defmodule EmberWeekendApi.Person do
   use EmberWeekendApi.Web, :model
+  alias EmberWeekendApi.EpisodeGuest
 
   schema "people" do
     field :name, :string
@@ -8,6 +9,8 @@ defmodule EmberWeekendApi.Person do
     field :avatar_url, :string
     field :tagline, :string
     field :bio, :string
+    has_many :episode_guests, EpisodeGuest, foreign_key: :guest_id
+    has_many :episodes, through: [:episode_guests, :episode]
 
     timestamps()
   end

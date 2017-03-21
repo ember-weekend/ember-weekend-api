@@ -13,6 +13,7 @@ defmodule EmberWeekendApi.ResourceController do
 
   def index(conn, _params) do
     resources = Repo.all(Resource)
+    resources = Repo.all(from(r in Resource, order_by: [r.title, r.inserted_at]))
     render(conn, data: resources)
   end
 

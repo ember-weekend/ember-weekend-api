@@ -2,13 +2,14 @@ defmodule EmberWeekendApi.PersonController do
   use EmberWeekendApi.Web, :controller
   import EmberWeekendApi.Auth
   import EmberWeekendApi.ControllerErrors
+  import Ecto.Query, only: [from: 2]
   alias EmberWeekendApi.Person
 
   plug :model_name, :person
   plug :authenticate, :admin when action in [:create, :update, :delete]
 
   def index(conn, _params) do
-    people = Repo.all(Person)
+    people = Repo.all(from(p in Person, order_by: [p.name, p.inserted_at]))
     render(conn, data: people)
   end
 

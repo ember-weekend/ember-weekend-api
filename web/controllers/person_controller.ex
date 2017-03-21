@@ -19,7 +19,7 @@ defmodule EmberWeekendApi.PersonController do
       person ->
         conn
         |> render(:show, data: person, opts: [
-          include: "episodes"
+          include: "episodes,resources"
         ])
     end
   end

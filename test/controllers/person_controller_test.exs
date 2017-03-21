@@ -30,6 +30,7 @@ defmodule EmberWeekendApi.PersonControllerTest do
       "type" => "people",
       "relationships" => %{
         "episodes" => %{},
+        "resources" => %{},
       },
       "links" => %{"self" => "/api/people/#{person.id}"},
       "attributes" => @valid_attrs
@@ -49,6 +50,9 @@ defmodule EmberWeekendApi.PersonControllerTest do
       "type" => "people",
       "relationships" => %{
         "episodes" => %{
+          "data" => []
+        },
+        "resources" => %{
           "data" => []
         },
       },
@@ -129,6 +133,7 @@ defmodule EmberWeekendApi.PersonControllerTest do
       "type" => "people",
       "relationships" => %{
         "episodes" => %{},
+        "resources" => %{},
       },
       "links" => %{"self" => "/api/people/#{person_id}"},
       "attributes" => string_keys(attributes)

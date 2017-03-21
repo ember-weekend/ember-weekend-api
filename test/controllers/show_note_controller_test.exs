@@ -65,6 +65,7 @@ defmodule EmberWeekendApi.ShowNoteControllerTest do
           "type" => "people",
           "relationships" => %{
             "episodes" => %{},
+            "resources" => %{},
           },
           "links" => %{"self" => "/api/people/#{person.id}"},
           "attributes" => @valid_person_attrs

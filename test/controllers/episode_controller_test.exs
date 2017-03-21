@@ -117,6 +117,7 @@ defmodule EmberWeekendApi.EpisodeControllerTest do
       "type" => "people",
       "relationships" => %{
         "episodes" => %{},
+        "resources" => %{},
       }
     }]
   end
@@ -180,6 +181,7 @@ defmodule EmberWeekendApi.EpisodeControllerTest do
       "type" => "people",
       "relationships" => %{
         "episodes" => %{},
+        "resources" => %{},
       }
     }]
   end

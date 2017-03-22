@@ -21,7 +21,7 @@ defmodule EmberWeekendApi.ResourceController do
     case Repo.get(Resource, id) do
       nil -> not_found(conn)
       resource -> render(conn, data: resource, opts: [
-        include: "authors"
+        include: "authors,show_notes"
       ])
     end
   end

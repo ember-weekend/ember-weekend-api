@@ -1,12 +1,14 @@
 defmodule EmberWeekendApi.Resource do
   use EmberWeekendApi.Web, :model
   alias EmberWeekendApi.ResourceAuthor
+  alias EmberWeekendApi.ShowNote
 
   schema "resources" do
     field :title, :string
     field :url, :string
     has_many :resource_authors, ResourceAuthor
     has_many :authors, through: [:resource_authors, :author]
+    has_many :show_notes, ShowNote
 
     timestamps()
   end

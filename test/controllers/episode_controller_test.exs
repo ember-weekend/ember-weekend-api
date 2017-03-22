@@ -107,6 +107,7 @@ defmodule EmberWeekendApi.EpisodeControllerTest do
       "type" => "resources",
       "relationships" => %{
         "authors" => %{ "data" => [%{ "type" => "people", "id" => "#{person.id}" }] },
+        "show-notes" => %{},
       }
     },%{
       "attributes" => @valid_person_attrs
@@ -171,6 +172,7 @@ defmodule EmberWeekendApi.EpisodeControllerTest do
       "type" => "resources",
       "relationships" => %{
         "authors" => %{ "data" => [%{ "type" => "people", "id" => "#{person.id}" }] },
+        "show-notes" => %{},
       }
     },%{
       "attributes" => @valid_person_attrs

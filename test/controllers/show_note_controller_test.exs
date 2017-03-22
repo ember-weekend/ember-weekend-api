@@ -55,7 +55,8 @@ defmodule EmberWeekendApi.ShowNoteControllerTest do
           "relationships" => %{
             "authors" => %{
               "data" => [%{ "type" => "people", "id" => "#{person.id}" }]
-            }
+            },
+            "show-notes" => %{},
           },
           "attributes" => @valid_resource_attrs
                         |> string_keys

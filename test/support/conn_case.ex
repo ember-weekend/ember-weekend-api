@@ -31,6 +31,7 @@ defmodule EmberWeekendApi.ConnCase do
       import Ecto.Query, only: [from: 1, from: 2]
 
       import EmberWeekendApi.Router.Helpers
+      import EmberWeekendApi.Factory
 
       # The default endpoint for testing
       @endpoint EmberWeekendApi.Endpoint

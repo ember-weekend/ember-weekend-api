@@ -24,6 +24,14 @@ defmodule EmberWeekendApi.Web do
       import Ecto
       import Ecto.Changeset
       import Ecto.Query, only: [from: 1, from: 2]
+
+      def count() do
+        EmberWeekendApi.Repo.aggregate(__MODULE__, :count, :id)
+      end
+
+      def first() do
+        EmberWeekendApi.Repo.one(from(__MODULE__, order_by: [asc: :id], limit: 1))
+      end
     end
   end
 

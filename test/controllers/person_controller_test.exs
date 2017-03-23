@@ -138,7 +138,7 @@ defmodule EmberWeekendApi.PersonControllerTest do
       "links" => %{"self" => "/api/people/#{person_id}"},
       "attributes" => string_keys(attributes)
     }
-    assert Repo.all(Person) |> Enum.count == 1
+    assert Person.count == 1
     assert Repo.get!(Person, person_id)
   end
 
@@ -152,7 +152,7 @@ defmodule EmberWeekendApi.PersonControllerTest do
 
     assert conn.status == 200
     assert json_api_response(conn)["data"]["attributes"]["name"] == "Better Name"
-    assert Repo.all(Person) |> Enum.count == 1
+    assert Person.count == 1
     person = Repo.get!(Person, person.id)
     assert person.name == "Better Name"
   end
@@ -192,7 +192,7 @@ defmodule EmberWeekendApi.PersonControllerTest do
     conn = delete conn, person_path(conn, :update, person)
 
     assert conn.status == 204
-    assert Repo.all(Person) |> Enum.count() == 0
+    assert Person.count() == 0
   end
 
 end

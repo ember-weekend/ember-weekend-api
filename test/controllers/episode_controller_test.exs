@@ -225,7 +225,7 @@ defmodule EmberWeekendApi.EpisodeControllerTest do
 
     assert conn.status == 401
     assert json_api_response(conn)["errors"] == unauthorized("episode", "create")
-    assert Repo.all(Episode) |> Enum.count() == 0
+    assert Episode.count() == 0
   end
 
   test "non-admin user can't update episode", %{conn: conn} do
@@ -261,7 +261,7 @@ defmodule EmberWeekendApi.EpisodeControllerTest do
 
     assert conn.status == 401
     assert json_api_response(conn)["errors"] == unauthorized("episode", "create")
-    assert Repo.all(Episode) |> Enum.count() == 0
+    assert Episode.count() == 0
   end
 
   test "admin user can delete episode", %{conn: conn} do
@@ -271,7 +271,7 @@ defmodule EmberWeekendApi.EpisodeControllerTest do
     conn = delete conn, episode_path(conn, :update, episode)
 
     assert conn.status == 204
-    assert Repo.all(Episode) |> Enum.count() == 0
+    assert Episode.count() == 0
   end
 
   test "admin user can create episode", %{conn: conn} do
@@ -312,7 +312,7 @@ defmodule EmberWeekendApi.EpisodeControllerTest do
         }
       }
     }
-    assert Repo.all(Episode) |> Enum.count == 1
+    assert Episode.count == 1
     assert Repo.get!(Episode, episode_id)
   end
 
@@ -326,7 +326,7 @@ defmodule EmberWeekendApi.EpisodeControllerTest do
 
     assert conn.status == 200
     assert json_api_response(conn)["data"]["attributes"]["title"] == "Better title"
-    assert Repo.all(Episode) |> Enum.count == 1
+    assert Episode.count == 1
     episode = Repo.get!(Episode, episode.id)
     assert episode.title == "Better title"
   end

@@ -4,7 +4,10 @@ defmodule EmberWeekendApi.EpisodeShowView do
   alias EmberWeekendApi.ShowNoteView
   alias EmberWeekendApi.PersonView
 
-  attributes [:number, :title, :description, :slug, :release_date, :filename, :duration]
+  attributes [
+    :number, :title, :description, :slug,
+    :release_date, :filename, :duration, :published
+  ]
 
   has_many :show_notes,
     type: "show-notes",

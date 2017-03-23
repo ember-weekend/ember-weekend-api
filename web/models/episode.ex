@@ -2,6 +2,7 @@ defmodule EmberWeekendApi.Episode do
   use EmberWeekendApi.Web, :model
   alias EmberWeekendApi.ShowNote
   alias EmberWeekendApi.EpisodeGuest
+  import Ecto.Query, only: [from: 2]
 
   schema "episodes" do
     field :number, :integer
@@ -12,6 +13,7 @@ defmodule EmberWeekendApi.Episode do
     field :release_date, Timex.Ecto.Date
     field :filename, :string
     field :duration, :string
+    field :published, :boolean
     has_many :show_notes, ShowNote
     has_many :episode_guests, EpisodeGuest
     has_many :guests, through: [:episode_guests, :guest]
@@ -19,7 +21,7 @@ defmodule EmberWeekendApi.Episode do
     timestamps()
   end
 
-  @required_fields ~w(number title description slug release_date filename duration)a
+  @required_fields ~w(number title description slug release_date filename duration published)a
   @optional_fields ~w()a
 
   @doc """
@@ -32,5 +34,10 @@ defmodule EmberWeekendApi.Episode do
     struct
     |> cast(params, @optional_fields ++ @required_fields)
     |> validate_required(@required_fields)
+  end
+
+  def published(query) do
+    from(e in query,
+    where: e.published == true)
   end
 end

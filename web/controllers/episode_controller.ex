@@ -5,17 +5,22 @@ defmodule EmberWeekendApi.EpisodeController do
   alias EmberWeekendApi.Episode
   alias EmberWeekendApi.EpisodeGuest
   alias Ecto.Multi
+  import Ecto.Query, only: [from: 2]
 
   plug :model_name, :episode
   plug :authenticate, :admin when action in [:create, :update, :delete]
 
   def index(conn, _params) do
-    episodes = Repo.all(Episode)
+    query = case admin? conn do
+      true -> Episode
+         _ -> Episode.published(Episode)
+    end
+    episodes = Repo.all(query)
     render(conn, data: episodes)
   end
 
   def show(conn, %{"id" => id}) do
-    case find_by_slug_or_id(id) do
+    case find_by_slug_or_id(conn, id) do
       nil -> not_found(conn)
       episode ->
         conn
@@ -26,10 +31,18 @@ defmodule EmberWeekendApi.EpisodeController do
     end
   end
 
-  defp find_by_slug_or_id(id) do
+  defp find_by_slug_or_id(conn, id) do
+    query = case admin? conn do
+      true -> Episode
+         _ -> Episode.published(Episode)
+    end
     case Integer.parse(id) do
-      :error -> Repo.get_by(Episode, %{slug: id})
-      {id,_} -> Repo.get(Episode, id)
+      :error ->
+        from(e in query, where: e.slug == ^id)
+        |> Repo.one
+      {id,_} ->
+        from(e in query, where: e.id == ^id)
+        |> Repo.one
     end
   end
 

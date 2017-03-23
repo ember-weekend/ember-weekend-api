@@ -14,7 +14,8 @@ defmodule EmberWeekendApi.EpisodeControllerTest do
     slug: "anatomy-park",
     release_date: Timex.to_date({2013, 12, 15}),
     filename: "s01e03",
-    duration: "1:00:00"
+    duration: "1:00:00",
+    published: true,
   }
 
   @invalid_attrs %{}
@@ -42,8 +43,9 @@ defmodule EmberWeekendApi.EpisodeControllerTest do
     {:ok, conn: conn}
   end
 
-  test "lists all episodes on index", %{conn: conn} do
+  test "lists all published episodes on index", %{conn: conn} do
     episode = Repo.insert! Map.merge(%Episode{}, @valid_attrs)
+    Repo.insert! Map.merge(%Episode{}, Map.merge(@valid_attrs, %{number: 2, published: false}))
     conn = get conn, episode_path(conn, :index)
 
     assert conn.status == 200
@@ -56,6 +58,34 @@ defmodule EmberWeekendApi.EpisodeControllerTest do
                       |> dasherize_keys
                       |> convert_dates
     }]
+  end
+
+  test "admin user lists all episodes on index", %{conn: conn} do
+    conn = admin(conn)
+    episode = Repo.insert! Map.merge(%Episode{}, @valid_attrs)
+    unpublished = Repo.insert! Map.merge(%Episode{}, Map.merge(@valid_attrs, %{number: 2, published: false}))
+
+    conn = get conn, episode_path(conn, :index)
+
+    assert conn.status == 200
+    assert Enum.map(json_api_response(conn)["data"], fn(e) -> e["id"] end) == ["#{episode.id}", "#{unpublished.id}"]
+  end
+
+  test "non-admin user gets 404 for unpublished episode", %{conn: conn} do
+    episode = Repo.insert! Map.merge(%Episode{}, Map.merge(@valid_attrs, %{published: false}))
+
+    conn = get conn, episode_path(conn, :show, episode)
+
+    assert conn.status == 404
+  end
+
+  test "admin user views unpublished episode", %{conn: conn} do
+    conn = admin(conn)
+    episode = Repo.insert! Map.merge(%Episode{}, Map.merge(@valid_attrs, %{published: false}))
+
+    conn = get conn, episode_path(conn, :show, episode)
+
+    assert conn.status == 200
   end
 
   test "shows episode", %{conn: conn} do
@@ -345,7 +375,8 @@ defmodule EmberWeekendApi.EpisodeControllerTest do
       cant_be_blank("release_date"),
       cant_be_blank("slug"),
       cant_be_blank("duration"),
-      cant_be_blank("filename")
+      cant_be_blank("filename"),
+      cant_be_blank("published"),
     ] |> sort_by("detail")
   end
 

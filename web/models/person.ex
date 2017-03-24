@@ -18,8 +18,8 @@ defmodule EmberWeekendApi.Person do
     timestamps()
   end
 
-  @required_fields ~w(name handle url avatar_url)a
-  @optional_fields ~w(tagline bio)a
+  @required_fields ~w(name url)a
+  @optional_fields ~w(tagline bio handle avatar_url)a
 
   @doc """
   Creates a changeset based on the `struct` and `params`.

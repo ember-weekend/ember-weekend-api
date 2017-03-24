@@ -3,7 +3,7 @@ defmodule EmberWeekendApi.FeedController do
   alias EmberWeekendApi.Episode
 
   def index(conn, _params) do
-    episodes = from(e in Episode,
+    episodes = from(e in Episode.published(Episode),
                     order_by: [desc: e.number],
                     left_join: show_notes in assoc(e, :show_notes),
                     left_join: resource in assoc(show_notes, :resource),

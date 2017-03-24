@@ -6,7 +6,7 @@ defmodule EmberWeekendApi.EpisodeShowView do
 
   attributes [
     :number, :title, :description, :slug,
-    :release_date, :filename, :duration, :published
+    :release_date, :filename, :duration, :published, :length
   ]
 
   has_many :show_notes,

@@ -21,7 +21,8 @@ defmodule EmberWeekendApi.Episode do
     timestamps()
   end
 
-  @required_fields ~w(number title description slug release_date filename duration published)a
+  @required_fields ~w(number title description slug release_date
+                      filename duration published length)a
   @optional_fields ~w()a
 
   @doc """

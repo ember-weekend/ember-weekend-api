@@ -4,7 +4,7 @@ defmodule EmberWeekendApi.EpisodeView do
 
   attributes [
     :number, :title, :description, :slug,
-    :release_date, :filename, :duration, :published
+    :release_date, :filename, :duration, :published, :length
   ]
 
   def type, do: "episodes"

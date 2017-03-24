@@ -3,7 +3,7 @@ defmodule EmberWeekendApi.FeedController do
   alias EmberWeekendApi.Episode
 
   def index(conn, _params) do
-    episodes = Repo.all(Episode)
+    episodes = Repo.all(from(e in Episode, order_by: [desc: e.number]))
     render(conn, "index.xml", episodes: episodes)
   end
 

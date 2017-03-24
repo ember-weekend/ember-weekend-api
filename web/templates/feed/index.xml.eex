@@ -31,8 +31,8 @@
     <%= for episode <- episodes(@conn) do %>
       <item>
         <title>Episode <%= episode.number %>: <%= episode.title %></title>
-        <guid isPermaLink="false">cbbc3cc1-0266-419a-8ab2-19be67868054</guid>
-        <link>https://emberweekend.com/<%= episode.slug %></link>
+        <guid isPermaLink="true"><%= episode_url(episode) %></guid>
+        <link><%= episode_url(episode) %></link>
         <description><%= episode.description %></description>
         <content:encoded>
           <![CDATA[

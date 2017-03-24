@@ -40,4 +40,8 @@ defmodule EmberWeekendApi.FeedView do
       other -> other
     end
   end
+
+  def episode_url(model) do
+    "https://emberweekend.com/episodes/#{model.slug}"
+  end
 end

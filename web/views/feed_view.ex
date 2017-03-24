@@ -12,33 +12,15 @@ defmodule EmberWeekendApi.FeedView do
   end
 
   def show_notes(model) do
-    case model.show_notes do
-      %Ecto.Association.NotLoaded{} ->
-        model
-        |> Ecto.assoc(:show_notes)
-        |> EmberWeekendApi.Repo.all
-      other -> other
-    end
+    model.show_notes
   end
 
   def guests(model) do
-    case model.guests do
-      %Ecto.Association.NotLoaded{} ->
-        model
-        |> Ecto.assoc(:guests)
-        |> EmberWeekendApi.Repo.all
-      other -> other
-    end
+    model.guests
   end
 
   def resource(model) do
-    case model.resource do
-      %Ecto.Association.NotLoaded{} ->
-        model
-        |> Ecto.assoc(:resource)
-        |> EmberWeekendApi.Repo.one
-      other -> other
-    end
+    model.resource
   end
 
   def episode_url(model) do

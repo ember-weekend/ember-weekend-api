@@ -157,7 +157,7 @@ defmodule EmberWeekendApi.ResourceControllerTest do
       "links" => %{"self" => "/api/resources/#{resource_id}"},
       "attributes" => string_keys(attributes)
     }
-    assert Repo.all(Resource) |> Enum.count == 1
+    assert Resource.count == 1
     assert Repo.get!(Resource, resource_id)
   end
 
@@ -171,7 +171,7 @@ defmodule EmberWeekendApi.ResourceControllerTest do
 
     assert conn.status == 200
     assert json_api_response(conn)["data"]["attributes"]["title"] == "Better Title"
-    assert Repo.all(Resource) |> Enum.count == 1
+    assert Resource.count == 1
     resource = Repo.get!(Resource, resource.id)
     assert resource.title == "Better Title"
   end
@@ -209,7 +209,7 @@ defmodule EmberWeekendApi.ResourceControllerTest do
     conn = delete conn, resource_path(conn, :update, resource)
 
     assert conn.status == 204
-    assert Repo.all(Resource) |> Enum.count() == 0
+    assert Resource.count() == 0
   end
 
 end

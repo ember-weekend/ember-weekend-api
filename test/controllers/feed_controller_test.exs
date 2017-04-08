@@ -1,11 +1,5 @@
 defmodule EmberWeekendApi.FeedControllerTest do
   use EmberWeekendApi.ConnCase
-  alias EmberWeekendApi.ShowNote
-  alias EmberWeekendApi.Resource
-  alias EmberWeekendApi.Person
-  alias EmberWeekendApi.ResourceAuthor
-  alias EmberWeekendApi.Episode
-  alias EmberWeekendApi.EpisodeGuest
 
   import EmberWeekendApi.Factory
 

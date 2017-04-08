@@ -47,21 +47,21 @@ defmodule EmberWeekendApi.SessionControllerTest do
     assert included["type"] == "users"
     assert included["attributes"] == @github_user
 
-    assert Repo.all(LinkedAccount) |> Enum.count == 1
-    assert Repo.all(Session)       |> Enum.count == 1
-    assert Repo.all(User)          |> Enum.count == 1
+    assert LinkedAccount.count == 1
+    assert Session.count == 1
+    assert User.count == 1
 
-    user = Repo.all(User) |> List.first
+    user = User.first
     assert user.name == "Rick Sanchez"
     assert user.username == "tinyrick"
 
-    linked = Repo.all(LinkedAccount) |> List.first
+    linked = LinkedAccount.first
     assert linked.user_id == user.id
     assert linked.provider == "github"
     assert linked.provider_id == "1"
     assert linked.username == "tinyrick"
 
-    session = Repo.all(Session) |> List.first
+    session = Session.first
     assert session.user_id == user.id
 
   end
@@ -84,16 +84,16 @@ defmodule EmberWeekendApi.SessionControllerTest do
     assert included["type"] == "users"
     assert included["attributes"] == @github_user
 
-    assert Repo.all(LinkedAccount) |> Enum.count == 1
-    assert Repo.all(Session)       |> Enum.count == 1
-    assert Repo.all(User)          |> Enum.count == 1
+    assert LinkedAccount.count == 1
+    assert Session.count == 1
+    assert User.count == 1
 
-    linked = Repo.all(LinkedAccount) |> List.first
+    linked = LinkedAccount.first
     assert linked.user_id == user.id
     assert linked.provider == "github"
     assert linked.provider_id == "1"
 
-    session = Repo.all(Session) |> List.first
+    session = Session.first
     assert session.user_id == user.id
 
     conn = build_conn()
@@ -115,16 +115,16 @@ defmodule EmberWeekendApi.SessionControllerTest do
     assert included["type"] == "users"
     assert included["attributes"] == @github_user
 
-    assert Repo.all(LinkedAccount) |> Enum.count == 1
-    assert Repo.all(Session)       |> Enum.count == 1
-    assert Repo.all(User)          |> Enum.count == 1
+    assert LinkedAccount.count == 1
+    assert Session.count == 1
+    assert User.count == 1
 
-    linked = Repo.all(LinkedAccount) |> List.first
+    linked = LinkedAccount.first
     assert linked.user_id == user.id
     assert linked.provider == "github"
     assert linked.provider_id == "1"
 
-    session = Repo.all(Session) |> List.first
+    session = Session.first
     assert session.user_id == user.id
   end
 
@@ -140,9 +140,9 @@ defmodule EmberWeekendApi.SessionControllerTest do
     assert error["title"]  == "Failed to create session"
     assert error["detail"] == "Invalid code"
 
-    assert Repo.all(LinkedAccount) |> Enum.count == 0
-    assert Repo.all(Session)       |> Enum.count == 0
-    assert Repo.all(User)          |> Enum.count == 0
+    assert LinkedAccount.count == 0
+    assert Session.count == 0
+    assert User.count == 0
   end
 
   test "signs out", %{conn: conn} do

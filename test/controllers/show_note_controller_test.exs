@@ -125,7 +125,7 @@ defmodule EmberWeekendApi.ShowNoteControllerTest do
         "episode"  => %{ "data" => %{ "type" => "episodes",  "id" => "#{episode.id}"  } }
       }
     }
-    assert Repo.all(ShowNote) |> Enum.count == 1
+    assert ShowNote.count == 1
     assert Repo.get!(ShowNote, show_note_id)
   end
 
@@ -165,7 +165,7 @@ defmodule EmberWeekendApi.ShowNoteControllerTest do
         "episode"  => %{ "data" => %{ "type" => "episodes",  "id" => "#{episode.id}"  } }
       }
     }
-    assert Repo.all(ShowNote) |> Enum.count == 1
+    assert ShowNote.count == 1
     assert Repo.get!(ShowNote, show_note_id)
   end
 
@@ -208,7 +208,7 @@ defmodule EmberWeekendApi.ShowNoteControllerTest do
         "episode"  => %{ "data" => %{ "type" => "episodes",  "id" => "#{episode2.id}"  } }
       }
     }
-    assert Repo.all(ShowNote) |> Enum.count == 1
+    assert ShowNote.count == 1
     assert Repo.get!(ShowNote, show_note_id)
   end
 
@@ -223,6 +223,6 @@ defmodule EmberWeekendApi.ShowNoteControllerTest do
     conn = delete conn, show_note_path(conn, :update, show_note)
 
     assert conn.status == 204
-    assert Repo.all(ShowNote) |> Enum.count() == 0
+    assert ShowNote.count() == 0
   end
 end

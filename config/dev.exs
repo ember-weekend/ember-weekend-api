@@ -52,4 +52,6 @@ admins = System.get_env("ADMINS") || "code0100fun, rondale-sc"
 
 config :ember_weekend_api, :admins, admins
 
-import_config "dev.secret.exs"
+if File.exists?("dev.secret.exs") do
+  import_config "dev.secret.exs"
+end

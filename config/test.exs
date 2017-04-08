@@ -10,13 +10,20 @@ config :ember_weekend_api, EmberWeekendApi.Web.Endpoint,
 config :logger, level: :warn
 
 # Configure your database
-config :ember_weekend_api, EmberWeekendApi.Repo,
-  adapter: Ecto.Adapters.Postgres,
-  database: "ember_weekend_api_test",
-  hostname: "localhost",
-  username: "postgres",
-  password: "postgres",
-  pool: Ecto.Adapters.SQL.Sandbox
+if Map.has_key?(System.get_env(), "DATABASE_URL") do
+  config :ember_weekend_api, EmberWeekendApi.Repo,
+    adapter: Ecto.Adapters.Postgres,
+    url: System.get_env("DATABASE_URL"),
+    pool: Ecto.Adapters.SQL.Sandbox
+else
+  config :ember_weekend_api, EmberWeekendApi.Repo,
+    adapter: Ecto.Adapters.Postgres,
+    database: "ember_weekend_api_test",
+    hostname: "localhost",
+    username: "postgres",
+    password: "postgres",
+    pool: Ecto.Adapters.SQL.Sandbox
+end
 
 config :ember_weekend_api, :github_api, EmberWeekendApi.Github.Stub
 config :ember_weekend_api, :admins, ["tinyrick"]

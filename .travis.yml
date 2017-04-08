@@ -1,7 +1,10 @@
 language: elixir
+services:
+  - postgresql
 elixir:
   - 1.4.2
 otp_release:
   - 19.3
 script:
+  - mix ecto.create
   - mix test --trace

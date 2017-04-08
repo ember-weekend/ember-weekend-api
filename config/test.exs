@@ -3,6 +3,7 @@ use Mix.Config
 # We don't run a server during test. If one is required,
 # you can enable the server option below.
 config :ember_weekend_api, EmberWeekendApi.Web.Endpoint,
+  secret_key_base: "iSFpZGaE90m7xArjQY/hjEBAxC9Wy8NXMYAQQ+OaSKEd4epRi4VJxQXtCxBODwOy",
   http: [port: 4001],
   server: false
 

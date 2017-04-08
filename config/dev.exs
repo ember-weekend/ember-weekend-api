@@ -15,6 +15,7 @@ config :ember_weekend_api, EmberWeekendApi.Web.Endpoint,
 
 # Watch static and templates for browser reloading.
 config :ember_weekend_api, EmberWeekendApi.Web.Endpoint,
+  secret_key_base: "iSFpZGaE90m7xArjQY/hjEBAxC9Wy8NXMYAQQ+OaSKEd4epRi4VJxQXtCxBODwOy",
   live_reload: [
     patterns: [
       ~r{priv/static/.*(js|css|png|jpeg|jpg|gif|svg)$},
@@ -43,10 +44,7 @@ config :ember_weekend_api, EmberWeekendApi.Repo,
 
 config :ember_weekend_api, :github_api, EmberWeekendApi.Github.HTTPClient
 
-admins = System.get_env("ADMINS") || "code0100fun, rondale-sc"
-          |> (fn
-            admins when is_binary(admins) -> admins
-            _ -> raise "Must define ADMINS on ENV" end).()
+admins = Map.fetch(System.get_env(), "ADMINS", "code0100fun, rondale-sc")
           |> String.replace(~r/\s/,"")
           |> String.split(",")
 

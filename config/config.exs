@@ -9,7 +9,6 @@ use Mix.Config
 config :ember_weekend_api, EmberWeekendApi.Web.Endpoint,
   url: [host: "localhost"],
   root: Path.dirname(__DIR__),
-  secret_key_base: "iSFpZGaE90m7xArjQY/hjEBAxC9Wy8NXMYAQQ+OaSKEd4epRi4VJxQXtCxBODwOy",
   render_errors: [view: EmberWeekendApi.Web.ErrorView, accepts: ~w(html json-api)],
   pubsub: [name: EmberWeekendApi.PubSub,
            adapter: Phoenix.PubSub.PG2]

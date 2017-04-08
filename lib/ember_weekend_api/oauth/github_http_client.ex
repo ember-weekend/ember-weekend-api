@@ -1,4 +1,5 @@
 defmodule EmberWeekendApi.Github.HTTPClient do
+  @access_token_url "https://github.com/login/oauth/access_token"
 
   def get_access_token(code, state) do
     body = {:form, [
@@ -8,7 +9,7 @@ defmodule EmberWeekendApi.Github.HTTPClient do
       "Content-type" => "application/x-www-form-urlencoded",
       "Accept" => "application/json"
     }
-    case HTTPoison.post(access_token_url(), body, headers) do
+    case HTTPoison.post(@access_token_url, body, headers) do
       {:ok, %HTTPoison.Response{body: body}} ->
         case JSON.decode(body) do
           {:ok, %{"access_token" => access_token}} ->
@@ -46,32 +47,15 @@ defmodule EmberWeekendApi.Github.HTTPClient do
     end
   end
 
-  defp access_token_url do
-    "https://github.com/login/oauth/access_token"
-  end
-
   defp client_id do
-    if Mix.env == :prod do
-      System.get_env("GITHUB_CLIENT_ID")
-    else
-      Application.get_env(:ember_weekend_api, EmberWeekendApi.Github)[:client_id]
-    end
+    Application.fetch_env!(EmberWeekendApi.Github, :client_id)
   end
 
   defp client_secret do
-    if Mix.env == :prod do
-      System.get_env("GITHUB_CLIENT_SECRET")
-    else
-      Application.get_env(:ember_weekend_api, EmberWeekendApi.Github)[:client_secret]
-    end
+    Application.fetch_env!(EmberWeekendApi.Github, :client_secret)
   end
 
   defp redirect_uri do
-    if Mix.env == :prod do
-      System.get_env("GITHUB_REDIRECT_URI")
-    else
-      Application.get_env(:ember_weekend_api, EmberWeekendApi.Github)[:redirect_uri]
-    end
+    Application.fetch_env!(EmberWeekendApi.Github, :redirect_uri)
   end
-
 end

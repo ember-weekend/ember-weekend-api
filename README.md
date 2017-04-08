@@ -1,4 +1,5 @@
-# Ember Weekend API
+# Ember Weekend API [![Build Status](https://travis-ci.org/ember-weekend/ember-weekend-api.svg?branch=master)](https://travis-ci.org/tsubery/ember-weekend)
+
 
 To start your Phoenix app:
 

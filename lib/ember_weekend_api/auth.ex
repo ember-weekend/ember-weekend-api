@@ -1,5 +1,5 @@
 defmodule EmberWeekendApi.Auth do
-  alias EmberWeekendApi.ControllerErrors
+  alias EmberWeekendApi.Web.ControllerErrors
 
   def admin?(conn) do
     case conn.assigns[:current_user] do

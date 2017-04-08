@@ -2,8 +2,8 @@ defmodule EmberWeekendApi.Plugs.Auth do
   import Plug.Conn
   import Phoenix.Controller
   alias EmberWeekendApi.Repo
-  alias EmberWeekendApi.User
-  alias EmberWeekendApi.Session
+  alias EmberWeekendApi.Web.User
+  alias EmberWeekendApi.Web.Session
 
   def init(default), do: default
 
@@ -15,7 +15,7 @@ defmodule EmberWeekendApi.Plugs.Auth do
         case Repo.get_by(Session, token: token) do
           nil ->
             conn
-            |> put_view(EmberWeekendApi.ErrorView)
+            |> put_view(EmberWeekendApi.Web.ErrorView)
             |> put_status(:unauthorized)
             |> render(:errors, errors: [%{
               status: "401",

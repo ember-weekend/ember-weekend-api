@@ -1,4 +1,4 @@
-defmodule EmberWeekendApi.ControllerErrors do
+defmodule EmberWeekendApi.Web.ControllerErrors do
   alias Phoenix.Controller
 
   def model_name(conn, model_name) do

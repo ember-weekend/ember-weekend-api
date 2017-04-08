@@ -1,7 +1,7 @@
 defmodule EmberWeekendApi.UserTest do
-  use EmberWeekendApi.ModelCase
+  use EmberWeekendApi.Web.ModelCase
 
-  alias EmberWeekendApi.User
+  alias EmberWeekendApi.Web.User
 
   @valid_attrs %{name: "some content", username: "some content"}
   @invalid_attrs %{}

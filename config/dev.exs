@@ -6,7 +6,7 @@ use Mix.Config
 # The watchers configuration can be used to run external
 # watchers to your application. For example, we use it
 # with brunch.io to recompile .js and .css sources.
-config :ember_weekend_api, EmberWeekendApi.Endpoint,
+config :ember_weekend_api, EmberWeekendApi.Web.Endpoint,
   http: [port: 4000],
   debug_errors: true,
   code_reloader: true,
@@ -14,13 +14,13 @@ config :ember_weekend_api, EmberWeekendApi.Endpoint,
   watchers: []
 
 # Watch static and templates for browser reloading.
-config :ember_weekend_api, EmberWeekendApi.Endpoint,
+config :ember_weekend_api, EmberWeekendApi.Web.Endpoint,
   live_reload: [
     patterns: [
       ~r{priv/static/.*(js|css|png|jpeg|jpg|gif|svg)$},
       ~r{priv/gettext/.*(po)$},
-      ~r{web/views/.*(ex)$},
-      ~r{web/templates/.*(eex)$}
+      ~r{lib/ember_weekend_api/web/views/.*(ex)$},
+      ~r{lib/ember_weekend_api/web/templates/.*(eex)$}
     ]
   ]
 

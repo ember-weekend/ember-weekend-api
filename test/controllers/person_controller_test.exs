@@ -1,6 +1,6 @@
 defmodule EmberWeekendApi.PersonControllerTest do
-  use EmberWeekendApi.ConnCase
-  alias EmberWeekendApi.Person
+  use EmberWeekendApi.Web.ConnCase
+  alias EmberWeekendApi.Web.Person
 
   @invalid_attrs %{}
 
@@ -157,12 +157,14 @@ defmodule EmberWeekendApi.PersonControllerTest do
     conn = post conn, person_path(conn, :create), data
 
     assert conn.status == 422
-    assert (json_api_response(conn)["errors"] |> sort_by("detail")) == [
+    json_errors =
+      json_api_response(conn)
+      |> Map.fetch!("errors")
+      |> Enum.sort_by(&Map.get(&1, "detail"))
+    assert json_errors == [
       cant_be_blank("name"),
-      cant_be_blank("handle"),
-      cant_be_blank("avatar_url"),
       cant_be_blank("url")
-    ] |> sort_by("detail")
+    ]
   end
 
   test "admin user sees validation messages when updating person", %{conn: conn} do

@@ -1,7 +1,7 @@
 defmodule EmberWeekendApi.ShowNoteTest do
-  use EmberWeekendApi.ModelCase
+  use EmberWeekendApi.Web.ModelCase
 
-  alias EmberWeekendApi.ShowNote
+  alias EmberWeekendApi.Web.ShowNote
 
   @valid_attrs %{time_stamp: "some content", episode_id: 1, resource_id: 1}
   @invalid_attrs %{}

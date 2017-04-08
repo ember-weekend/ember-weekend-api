@@ -1,4 +1,4 @@
-defmodule EmberWeekendApi.ChannelCase do
+defmodule EmberWeekendApi.Web.ChannelCase do
   @moduledoc """
   This module defines the test case to be used by
   channel tests.
@@ -27,7 +27,7 @@ defmodule EmberWeekendApi.ChannelCase do
 
 
       # The default endpoint for testing
-      @endpoint EmberWeekendApi.Endpoint
+      @endpoint EmberWeekendApi.Web.Endpoint
     end
   end
 

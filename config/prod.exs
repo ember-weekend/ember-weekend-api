@@ -1,6 +1,6 @@
 use Mix.Config
 
-config :ember_weekend_api, EmberWeekendApi.Endpoint,
+config :ember_weekend_api, EmberWeekendApi.Web.Endpoint,
   http: [port: {:system, "PORT"}],
   url: [scheme: "https", host: "ember-weekend-api.herokuapp.com", port: 443],
   force_ssl: [rewrite_on: [:x_forwarded_proto]],

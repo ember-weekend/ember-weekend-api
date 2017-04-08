@@ -1,11 +1,11 @@
 defmodule EmberWeekendApi.EpisodeControllerTest do
-  use EmberWeekendApi.ConnCase
-  alias EmberWeekendApi.ShowNote
-  alias EmberWeekendApi.Resource
-  alias EmberWeekendApi.Person
-  alias EmberWeekendApi.ResourceAuthor
-  alias EmberWeekendApi.Episode
-  alias EmberWeekendApi.EpisodeGuest
+  use EmberWeekendApi.Web.ConnCase
+  alias EmberWeekendApi.Web.ShowNote
+  alias EmberWeekendApi.Web.Resource
+  alias EmberWeekendApi.Web.Person
+  alias EmberWeekendApi.Web.ResourceAuthor
+  alias EmberWeekendApi.Web.Episode
+  alias EmberWeekendApi.Web.EpisodeGuest
 
   @valid_attrs %{
     number: 1,
@@ -16,6 +16,7 @@ defmodule EmberWeekendApi.EpisodeControllerTest do
     filename: "s01e03",
     duration: "1:00:00",
     published: true,
+    length: 1
   }
 
   @invalid_attrs %{}
@@ -377,6 +378,7 @@ defmodule EmberWeekendApi.EpisodeControllerTest do
       cant_be_blank("duration"),
       cant_be_blank("filename"),
       cant_be_blank("published"),
+      cant_be_blank("length")
     ] |> sort_by("detail")
   end
 

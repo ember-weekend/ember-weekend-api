@@ -1,5 +1,5 @@
 defmodule EmberWeekendApi.URLFormatTest do
-  use EmberWeekendApi.ConnCase
+  use EmberWeekendApi.Web.ConnCase
 
   test "adds json-api headers to *.json-api GET requests", %{conn: conn} do
     conn = get conn, "#{episode_path(conn, :index)}.json-api"

@@ -8,7 +8,7 @@ defmodule EmberWeekendApi do
 
     children = [
       # Start the endpoint when the application starts
-      supervisor(EmberWeekendApi.Endpoint, []),
+      supervisor(EmberWeekendApi.Web.Endpoint, []),
       # Start the Ecto repository
       supervisor(EmberWeekendApi.Repo, []),
       # Here you could define other workers and supervisors as children
@@ -24,7 +24,7 @@ defmodule EmberWeekendApi do
   # Tell Phoenix to update the endpoint configuration
   # whenever the application is updated.
   def config_change(changed, _new, removed) do
-    EmberWeekendApi.Endpoint.config_change(changed, removed)
+    EmberWeekendApi.Web.Endpoint.config_change(changed, removed)
     :ok
   end
 end

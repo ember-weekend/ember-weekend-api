@@ -1,7 +1,7 @@
 defmodule EmberWeekendApi.ResourceTest do
-  use EmberWeekendApi.ModelCase
+  use EmberWeekendApi.Web.ModelCase
 
-  alias EmberWeekendApi.Resource
+  alias EmberWeekendApi.Web.Resource
 
   @valid_attrs %{title: "some content", url: "some content"}
   @invalid_attrs %{}

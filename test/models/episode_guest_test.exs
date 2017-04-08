@@ -1,7 +1,7 @@
 defmodule EmberWeekendApi.EpisodeGuestTest do
-  use EmberWeekendApi.ModelCase
+  use EmberWeekendApi.Web.ModelCase
 
-  alias EmberWeekendApi.EpisodeGuest
+  alias EmberWeekendApi.Web.EpisodeGuest
 
   @valid_attrs %{episode_id: 1, guest_id: 2}
   @invalid_attrs %{}

@@ -1,0 +1,34 @@
+{
+  "lib/ember_weekend_api/web/controllers/*_controller.ex": {
+    "type": "controller",
+    "alternate": "test/controllers/{}_controller_test.exs"
+  },
+  "lib/ember_weekend_api/web/models/*.ex": {
+     "type": "schema",
+     "alternate": "test/models/{}_test.exs",
+  },
+  "lib/ember_weekend_api/web/channels/*_channel.ex": {
+     "type": "channel",
+     "alternate": "test/channels/{}_channel_test.exs",
+  },
+  "lib/ember_weekend_api/web/views/*_view.ex": {
+     "type": "view",
+     "alternate": "test/views/{}_view_test.exs",
+  },
+  "test/*_test.exs": {
+     "type": "test",
+     "alternate": "lib/ember_weekend_api/web/{}.ex",
+  },
+  "lib/ember_weekend_api/web/templates/*.html.eex": {
+	  "type": "template",
+	  "alternate": "lib/ember_weekend_api/web/views/{dirname|basename}_view.ex"
+  },
+  "assets/css/*.css": { "type": "stylesheet" },
+  "assets/js/*.js": { "type": "javascript" },
+  "lib/ember_weekend_api/web/router.ex": { "type": "router" },
+  "config/*.exs": { "type": "config" },
+  "mix.exs":     { "type": "mix" },
+  "*": { "start": "mix phoenix.server",
+	  "path": "lib/ember_weekend_api/web/**"
+  },
+}

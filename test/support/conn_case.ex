@@ -1,4 +1,4 @@
-defmodule EmberWeekendApi.ConnCase do
+defmodule EmberWeekendApi.Web.ConnCase do
   @moduledoc """
   This module defines the test case to be used by
   tests that require setting up a connection.
@@ -23,18 +23,18 @@ defmodule EmberWeekendApi.ConnCase do
       require IEx
 
       alias EmberWeekendApi.Repo
-      alias EmberWeekendApi.User
-      alias EmberWeekendApi.LinkedAccount
-      alias EmberWeekendApi.Session
+      alias EmberWeekendApi.Web.User
+      alias EmberWeekendApi.Web.LinkedAccount
+      alias EmberWeekendApi.Web.Session
       import Ecto
       import Ecto.Changeset
       import Ecto.Query, only: [from: 1, from: 2]
 
-      import EmberWeekendApi.Router.Helpers
+      import EmberWeekendApi.Web.Router.Helpers
       import EmberWeekendApi.Factory
 
       # The default endpoint for testing
-      @endpoint EmberWeekendApi.Endpoint
+      @endpoint EmberWeekendApi.Web.Endpoint
 
       require Logger
 

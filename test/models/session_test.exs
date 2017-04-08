@@ -1,7 +1,7 @@
 defmodule EmberWeekendApi.SessionTest do
-  use EmberWeekendApi.ModelCase
+  use EmberWeekendApi.Web.ModelCase
 
-  alias EmberWeekendApi.Session
+  alias EmberWeekendApi.Web.Session
 
   @valid_attrs %{token: "some content", user_id: 1}
   @invalid_attrs %{}

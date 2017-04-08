@@ -10,12 +10,7 @@
 # We recommend using the bang functions (`insert!`, `update!`
 # and so on) as they will fail if something goes wrong.
 alias EmberWeekendApi.Repo
-alias EmberWeekendApi.Episode
-alias EmberWeekendApi.Person
-alias EmberWeekendApi.Resource
-alias EmberWeekendApi.ResourceAuthor
-alias EmberWeekendApi.ShowNote
-alias EmberWeekendApi.EpisodeGuest
+alias EmberWeekendApi.Web.{Episode, Person, Resource, ResourceAuthor, ShowNote, EpisodeGuest}
 
 Repo.delete_all(ShowNote)
 Repo.delete_all(EpisodeGuest)

@@ -1,8 +1,8 @@
 defmodule EmberWeekendApi.SessionControllerTest do
-  use EmberWeekendApi.ConnCase
-  alias EmberWeekendApi.User
-  alias EmberWeekendApi.Session
-  alias EmberWeekendApi.LinkedAccount
+  use EmberWeekendApi.Web.ConnCase
+  alias EmberWeekendApi.Web.User
+  alias EmberWeekendApi.Web.Session
+  alias EmberWeekendApi.Web.LinkedAccount
 
   @valid_params   %{
     data: %{

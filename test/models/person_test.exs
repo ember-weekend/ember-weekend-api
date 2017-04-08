@@ -1,7 +1,7 @@
 defmodule EmberWeekendApi.PersonTest do
-  use EmberWeekendApi.ModelCase
+  use EmberWeekendApi.Web.ModelCase
 
-  alias EmberWeekendApi.Person
+  alias EmberWeekendApi.Web.Person
 
   @valid_attrs %{
     avatar_url: "some content",

@@ -1,6 +1,6 @@
 defmodule EmberWeekendApi.Factory do
   use ExMachina.Ecto, repo: EmberWeekendApi.Repo
-  alias EmberWeekendApi.{Episode, Person}
+  alias EmberWeekendApi.Web.{Episode, Person}
 
   def episode_factory do
     title = Faker.Lorem.words(%Range{first: 1, last: 8})

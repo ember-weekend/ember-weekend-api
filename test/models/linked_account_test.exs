@@ -1,7 +1,7 @@
 defmodule EmberWeekendApi.LinkedAccountTest do
-  use EmberWeekendApi.ModelCase
+  use EmberWeekendApi.Web.ModelCase
 
-  alias EmberWeekendApi.LinkedAccount
+  alias EmberWeekendApi.Web.LinkedAccount
 
   @valid_attrs %{
     username: "some_username",

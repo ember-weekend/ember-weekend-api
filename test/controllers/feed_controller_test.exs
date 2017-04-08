@@ -1,5 +1,5 @@
 defmodule EmberWeekendApi.FeedControllerTest do
-  use EmberWeekendApi.ConnCase
+  use EmberWeekendApi.Web.ConnCase
 
   import EmberWeekendApi.Factory
 
@@ -15,7 +15,8 @@ defmodule EmberWeekendApi.FeedControllerTest do
   end
 
   test "feed contains episodes", %{conn: conn} do
-    insert_list(3, :episode)
+    db_episodes = insert_list(3, :episode, published: true)
+    assert length(db_episodes) == 3
     conn = get conn, feed_path(conn, :index)
     {:ok, feed, _} = FeederEx.parse(conn.resp_body)
     assert Enum.count(feed.entries) == 3
@@ -26,11 +27,12 @@ defmodule EmberWeekendApi.FeedControllerTest do
              number: 1,
              title: "first episode",
              description: "description",
-             slug: "first-episode"
+             slug: "first-episode",
+             published: true,
            })
     conn = get conn, feed_path(conn, :index)
     {:ok, feed, _} = FeederEx.parse(conn.resp_body)
-    item = List.first(feed.entries)
+    assert item = List.first(feed.entries)
     assert item.title == "Episode 1: first episode"
     assert item.subtitle == "description"
     assert item.link == "https://emberweekend.com/first-episode"

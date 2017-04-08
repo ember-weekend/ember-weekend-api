@@ -1,8 +1,8 @@
 defmodule EmberWeekendApi.ResourceControllerTest do
-  use EmberWeekendApi.ConnCase
-  alias EmberWeekendApi.Resource
-  alias EmberWeekendApi.Person
-  alias EmberWeekendApi.ResourceAuthor
+  use EmberWeekendApi.Web.ConnCase
+  alias EmberWeekendApi.Web.Resource
+  alias EmberWeekendApi.Web.Person
+  alias EmberWeekendApi.Web.ResourceAuthor
 
   @valid_attrs %{
     title: "Plumbuses",

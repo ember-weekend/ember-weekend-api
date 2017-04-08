@@ -1,10 +1,10 @@
 defmodule EmberWeekendApi.ShowNoteControllerTest do
-  use EmberWeekendApi.ConnCase
-  alias EmberWeekendApi.ShowNote
-  alias EmberWeekendApi.Resource
-  alias EmberWeekendApi.Person
-  alias EmberWeekendApi.ResourceAuthor
-  alias EmberWeekendApi.Episode
+  use EmberWeekendApi.Web.ConnCase
+  alias EmberWeekendApi.Web.ShowNote
+  alias EmberWeekendApi.Web.Resource
+  alias EmberWeekendApi.Web.Person
+  alias EmberWeekendApi.Web.ResourceAuthor
+  alias EmberWeekendApi.Web.Episode
 
   @valid_attrs %{time_stamp: "01:14"}
 

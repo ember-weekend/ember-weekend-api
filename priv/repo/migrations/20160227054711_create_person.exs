@@ -8,7 +8,7 @@ defmodule EmberWeekendApi.Repo.Migrations.CreatePerson do
       add :url, :string
       add :avatar_url, :string
 
-      timestamps
+      timestamps()
     end
 
   end

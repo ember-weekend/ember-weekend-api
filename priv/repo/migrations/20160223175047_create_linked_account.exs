@@ -8,7 +8,7 @@ defmodule EmberWeekendApi.Repo.Migrations.CreateLinkedAccount do
       add :provider_id, :string
       add :user_id, references(:users, on_delete: :nothing)
 
-      timestamps
+      timestamps()
     end
     create index(:linked_accounts, [:user_id])
 

@@ -6,7 +6,7 @@ defmodule EmberWeekendApi.Repo.Migrations.CreateUser do
       add :name, :string
       add :username, :string
 
-      timestamps
+      timestamps()
     end
 
   end

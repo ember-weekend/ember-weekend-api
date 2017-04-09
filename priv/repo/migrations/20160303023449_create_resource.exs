@@ -6,7 +6,7 @@ defmodule EmberWeekendApi.Repo.Migrations.CreateResource do
       add :title, :string
       add :url, :string
 
-      timestamps
+      timestamps()
     end
 
   end

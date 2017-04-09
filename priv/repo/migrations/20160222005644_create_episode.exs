@@ -10,7 +10,7 @@ defmodule EmberWeekendApi.Repo.Migrations.CreateEpisode do
       add :filename, :string
       add :duration, :string
 
-      timestamps
+      timestamps()
     end
 
   end

@@ -6,7 +6,7 @@ defmodule EmberWeekendApi.Repo.Migrations.CreateResourceAuthor do
       add :author_id, references(:people, on_delete: :nothing)
       add :resource_id, references(:resources, on_delete: :nothing)
 
-      timestamps
+      timestamps()
     end
     create index(:resource_authors, [:author_id])
     create index(:resource_authors, [:resource_id])

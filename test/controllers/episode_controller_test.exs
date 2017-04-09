@@ -1,11 +1,5 @@
 defmodule EmberWeekendApi.EpisodeControllerTest do
   use EmberWeekendApi.Web.ConnCase
-  alias EmberWeekendApi.Web.ShowNote
-  alias EmberWeekendApi.Web.Resource
-  alias EmberWeekendApi.Web.Person
-  alias EmberWeekendApi.Web.ResourceAuthor
-  alias EmberWeekendApi.Web.Episode
-  alias EmberWeekendApi.Web.EpisodeGuest
 
   @valid_attrs %{
     number: 1,

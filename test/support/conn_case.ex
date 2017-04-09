@@ -23,9 +23,10 @@ defmodule EmberWeekendApi.Web.ConnCase do
       require IEx
 
       alias EmberWeekendApi.Repo
-      alias EmberWeekendApi.Web.User
-      alias EmberWeekendApi.Web.LinkedAccount
-      alias EmberWeekendApi.Web.Session
+      alias EmberWeekendApi.Web.{
+        Episode, Person, Resource, ResourceAuthor, ShowNote, EpisodeGuest,
+        Session, LinkedAccount, User
+      }
       import Ecto
       import Ecto.Changeset
       import Ecto.Query, only: [from: 1, from: 2]

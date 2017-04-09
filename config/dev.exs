@@ -44,7 +44,7 @@ config :ember_weekend_api, EmberWeekendApi.Repo,
 
 config :ember_weekend_api, :github_api, EmberWeekendApi.Github.HTTPClient
 
-admins = Map.fetch(System.get_env(), "ADMINS", "code0100fun, rondale-sc")
+admins = Map.get(System.get_env(), "ADMINS", "code0100fun, rondale-sc")
           |> String.replace(~r/\s/,"")
           |> String.split(",")
 

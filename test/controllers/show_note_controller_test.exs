@@ -39,47 +39,56 @@ defmodule EmberWeekendApi.ShowNoteControllerTest do
   end
 
   test "lists all entries on index", %{conn: conn} do
-    person = Repo.insert! Map.merge(%Person{}, @valid_person_attrs)
-    resource = Repo.insert! Map.merge(%Resource{}, @valid_resource_attrs)
-    Repo.insert! %ResourceAuthor{resource_id: resource.id, author_id: person.id}
-    episode = Repo.insert! Map.merge(%Episode{}, @valid_episode_attrs)
-    show_note = Repo.insert! Map.merge(%ShowNote{episode_id: episode.id, resource_id: resource.id}, @valid_attrs)
+    ra = insert(:resource_author)
+    resource = ra.resource
+    author = ra.author
+    show_note = insert(:show_note, resource: resource)
 
     conn = get conn, show_note_path(conn, :index)
+    resp = json_api_response(conn)
 
     assert conn.status == 200
-    assert json_api_response(conn)["included"] == [%{
-          "id" => "#{resource.id}",
-          "type" => "resources",
-          "links" => %{"self" => "/api/resources/#{resource.id}"},
-          "relationships" => %{
-            "authors" => %{
-              "data" => [%{ "type" => "people", "id" => "#{person.id}" }]
-            },
-            "show-notes" => %{},
-          },
-          "attributes" => @valid_resource_attrs
-                        |> string_keys
-                        |> dasherize_keys
-        },%{
-          "id" => "#{person.id}",
-          "type" => "people",
-          "relationships" => %{
-            "episodes" => %{},
-            "resources" => %{},
-          },
-          "links" => %{"self" => "/api/people/#{person.id}"},
-          "attributes" => @valid_person_attrs
-                        |> string_keys
-                        |> dasherize_keys
-    }]
+    assert [author_incl, resource_incl] = Enum.sort_by(resp["included"], & Map.get(&1, "type"))
+
+    assert resource_incl == %{
+      "id" => "#{resource.id}",
+      "type" => "resources",
+      "links" => %{"self" => "/api/resources/#{resource.id}"},
+      "relationships" => %{
+        "authors" => %{
+          "data" => [%{ "type" => "people", "id" => "#{author.id}" }]
+        },
+        "show-notes" => %{},
+      },
+      "attributes" => %{
+        "title" =>  resource.title,
+        "url" => resource.url,
+    }}
+
+    assert author_incl == %{
+      "id" => "#{author.id}",
+      "type" => "people",
+      "relationships" => %{
+        "episodes" => %{},
+        "resources" => %{},
+      },
+      "links" => %{"self" => "/api/people/#{author.id}"},
+      "attributes" => %{
+        "name" => author.name,
+        "avatar-url" => author.avatar_url,
+        "handle" => author.handle,
+        "tagline" => author.tagline,
+        "bio" => author.bio,
+        "url" => author.url,
+    }}
+
     assert json_api_response(conn)["data"] == [%{
       "relationships" => %{
         "resource" => %{
           "data" => %{ "type" => "resources", "id" => "#{resource.id}" }
         },
         "episode" => %{
-          "data" => %{ "type" => "episodes", "id" => "#{episode.id}" }
+          "data" => %{ "type" => "episodes", "id" => "#{show_note.episode.id}" }
         }
       },
       "links" => %{"self" => "/api/show-notes/#{show_note.id}"},

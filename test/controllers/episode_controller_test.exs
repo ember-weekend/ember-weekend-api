@@ -112,7 +112,11 @@ defmodule EmberWeekendApi.EpisodeControllerTest do
         }
       }
     }
-    assert json_api_response(conn)["included"] == [%{
+
+    resp = json_api_response(conn)
+    assert [person_incl, resource_incl, show_note_incl] = Enum.sort_by(resp["included"], & Map.get(&1, "type"))
+
+    assert show_note_incl == %{
       "attributes" => @valid_show_note_attrs
                     |> string_keys
                     |> dasherize_keys,
@@ -123,7 +127,8 @@ defmodule EmberWeekendApi.EpisodeControllerTest do
         "episode"  => %{ "data" => %{ "type" => "episodes",  "id" => "#{episode.id}"  } }
       },
       "type" => "show-notes"
-    },%{
+    }
+    assert resource_incl == %{
       "attributes" => @valid_resource_attrs
                     |> string_keys
                     |> dasherize_keys,
@@ -134,7 +139,8 @@ defmodule EmberWeekendApi.EpisodeControllerTest do
         "authors" => %{ "data" => [%{ "type" => "people", "id" => "#{person.id}" }] },
         "show-notes" => %{},
       }
-    },%{
+    }
+    assert person_incl == %{
       "attributes" => @valid_person_attrs
                     |> string_keys
                     |> dasherize_keys,
@@ -145,7 +151,7 @@ defmodule EmberWeekendApi.EpisodeControllerTest do
         "episodes" => %{},
         "resources" => %{},
       }
-    }]
+    }
   end
 
   test "shows episode by slug", %{conn: conn} do
@@ -177,7 +183,11 @@ defmodule EmberWeekendApi.EpisodeControllerTest do
         }
       }
     }
-    assert json_api_response(conn)["included"] == [%{
+
+    resp = json_api_response(conn)
+    assert [person_incl, resource_incl, show_note_incl] = Enum.sort_by(resp["included"], & Map.get(&1, "type"))
+
+    assert show_note_incl == %{
       "attributes" => @valid_show_note_attrs
                     |> string_keys
                     |> dasherize_keys,
@@ -188,7 +198,8 @@ defmodule EmberWeekendApi.EpisodeControllerTest do
         "episode"  => %{ "data" => %{ "type" => "episodes",  "id" => "#{episode.id}"  } }
       },
       "type" => "show-notes"
-    },%{
+    }
+    assert resource_incl == %{
       "attributes" => @valid_resource_attrs
                     |> string_keys
                     |> dasherize_keys,
@@ -199,7 +210,8 @@ defmodule EmberWeekendApi.EpisodeControllerTest do
         "authors" => %{ "data" => [%{ "type" => "people", "id" => "#{person.id}" }] },
         "show-notes" => %{},
       }
-    },%{
+    }
+    assert person_incl == %{
       "attributes" => @valid_person_attrs
                     |> string_keys
                     |> dasherize_keys,
@@ -210,7 +222,7 @@ defmodule EmberWeekendApi.EpisodeControllerTest do
         "episodes" => %{},
         "resources" => %{},
       }
-    }]
+    }
   end
 
   test "throws error for invalid episode id", %{conn: conn} do

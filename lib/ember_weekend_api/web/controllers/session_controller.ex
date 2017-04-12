@@ -73,7 +73,7 @@ defmodule EmberWeekendApi.Web.SessionController do
   end
 
   defp find_or_create_user(attrs, access_token, provider) do
-    case Repo.get_by(User, name: attrs[:name]) do
+    case Repo.get_by(User, username: attrs[:username]) do
       nil ->
         case create_user(attrs) do
           {:ok, user} ->

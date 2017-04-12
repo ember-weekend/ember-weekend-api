@@ -60,7 +60,7 @@ defmodule EmberWeekendApi.EpisodeControllerTest do
   test "admin user lists all episodes on index", %{conn: conn} do
     conn = admin(conn)
     episode = insert(:episode)
-    unpublished = insert(:episode, number: 2, published: false)
+    unpublished = insert(:episode, published: false)
 
     conn = get conn, episode_path(conn, :index)
 

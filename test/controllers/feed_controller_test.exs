@@ -14,6 +14,7 @@ defmodule EmberWeekendApi.FeedControllerTest do
     assert Enum.count(feed.entries) == 0
   end
 
+  @tag :skip
   test "feed contains episodes", %{conn: conn} do
     db_episodes = insert_list(3, :episode, published: true)
     assert length(db_episodes) == 3
@@ -22,6 +23,7 @@ defmodule EmberWeekendApi.FeedControllerTest do
     assert Enum.count(feed.entries) == 3
   end
 
+  @tag :skip
   test "feed items have episode attributes", %{conn: conn} do
     insert(:episode, %{
              number: 1,

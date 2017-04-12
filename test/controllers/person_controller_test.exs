@@ -2,8 +2,6 @@ defmodule EmberWeekendApi.PersonControllerTest do
   use EmberWeekendApi.Web.ConnCase
   alias EmberWeekendApi.Web.Person
 
-  @invalid_attrs %{}
-
   setup %{conn: conn} do
     conn = conn
     |> put_req_header("accept", "application/vnd.api+json")
@@ -13,7 +11,7 @@ defmodule EmberWeekendApi.PersonControllerTest do
 
   test "lists all people on index", %{conn: conn} do
     attrs = params_for(:person)
-    person = struct(Person, attrs) |> Repo.insert!
+    person = insert(:person, attrs)
     conn = get conn, person_path(conn, :index)
 
     assert conn.status == 200
@@ -33,7 +31,7 @@ defmodule EmberWeekendApi.PersonControllerTest do
 
   test "shows person", %{conn: conn} do
     attrs = params_for(:person)
-    person = struct(Person, attrs) |> Repo.insert!
+    person = insert(:person, attrs)
 
     conn = get conn, person_path(conn, :show, person)
 
@@ -152,7 +150,7 @@ defmodule EmberWeekendApi.PersonControllerTest do
 
   test "admin user sees validation messages when creating person", %{conn: conn} do
     conn = admin(conn)
-    data = %{data: %{type: "people", attributes: @invalid_attrs}}
+    data = %{data: %{type: "people", attributes: %{}}}
 
     conn = post conn, person_path(conn, :create), data
 

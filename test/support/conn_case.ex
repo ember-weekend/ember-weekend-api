@@ -67,14 +67,15 @@ defmodule EmberWeekendApi.Web.ConnCase do
       end
 
       def convert_dates(map) do
-        for {key, val} <- map, into: %{} do
-          case val do
-            %Date{} ->
-              {:ok, date} = Timex.Format.DateTime.Formatter.format(val, "%Y-%m-%d", :strftime)
-              {key, date}
-            _ -> {key,val}
-          end
-        end
+        Enum.map(map, fn
+          {k, v = %Date{}} ->
+            {k, Date.to_iso8601(v)}
+          {k, v = %DateTime{}} ->
+            {k, DateTime.to_iso8601(v)}
+          {k, v} ->
+            {k,v}
+        end)
+        |> Enum.into(%{})
       end
 
       def not_found(model_name) do
@@ -137,14 +138,8 @@ defmodule EmberWeekendApi.Web.ConnCase do
 
       def authenticated(conn, attributes) do
         token = "VALID"
-        user = Repo.insert! User.changeset %User{}, attributes
-        linked_accounts = Repo.insert! %LinkedAccount{
-          username: attributes[:username],
-          provider: "github",
-          provider_id: "1",
-          access_token: "valid_token",
-          user_id: user.id
-        }
+        user = insert(:user, attributes)
+        insert(:linked_account, user: user, username: user.username)
         Repo.insert! %Session{token: token, user_id: user.id}
         put_req_header(conn, "authorization", "token #{token}")
       end

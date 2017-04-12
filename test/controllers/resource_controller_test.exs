@@ -1,8 +1,5 @@
 defmodule EmberWeekendApi.ResourceControllerTest do
   use EmberWeekendApi.Web.ConnCase
-  alias EmberWeekendApi.Web.Resource
-  alias EmberWeekendApi.Web.Person
-  alias EmberWeekendApi.Web.ResourceAuthor
 
   @valid_attrs %{
     title: "Plumbuses",
@@ -10,13 +7,6 @@ defmodule EmberWeekendApi.ResourceControllerTest do
   }
 
   @invalid_attrs %{}
-
-  @valid_person_attrs %{
-    name: "Jerry Smith",
-    handle: "dr_pluto",
-    url: "http://rickandmorty.wikia.com/wiki/Jerry_Smith",
-    avatar_url: "http://vignette3.wikia.nocookie.net/rickandmorty/images/5/5d/Jerry_S01E11_Sad.JPG/revision/latest?cb=20140501090439"
-  }
 
   setup %{conn: conn} do
     conn = conn
@@ -26,10 +16,7 @@ defmodule EmberWeekendApi.ResourceControllerTest do
   end
 
   test "lists all resources on index", %{conn: conn} do
-    person = Repo.insert! Map.merge(%Person{}, @valid_person_attrs)
-    resource = Repo.insert! Map.merge(%Resource{}, @valid_attrs)
-    Repo.insert! %ResourceAuthor{resource_id: resource.id, author_id: person.id}
-
+    ra = insert(:resource_author)
     conn = get conn, resource_path(conn, :index)
 
     assert conn.status == 200
@@ -38,8 +25,8 @@ defmodule EmberWeekendApi.ResourceControllerTest do
         "authors" => %{},
         "show-notes" => %{},
       },
-      "links" => %{"self" => "/api/resources/#{resource.id}"},
-      "id" => "#{resource.id}",
+      "links" => %{"self" => "/api/resources/#{ra.resource.id}"},
+      "id" => "#{ra.resource.id}",
       "type" => "resources",
       "attributes" => @valid_attrs
                     |> string_keys
@@ -48,7 +35,7 @@ defmodule EmberWeekendApi.ResourceControllerTest do
   end
 
   test "shows resource", %{conn: conn} do
-    resource = Repo.insert! Map.merge(%Resource{}, @valid_attrs)
+    resource = insert(:resource)
 
     conn = get conn, resource_path(conn, :show, resource)
 
@@ -79,7 +66,7 @@ defmodule EmberWeekendApi.ResourceControllerTest do
   end
 
   test "unauthenticated user can't update resource", %{conn: conn} do
-    resource = Repo.insert! Map.merge(%Resource{}, @valid_attrs)
+    resource = insert(:resource)
     data = %{data: %{attributes: %{title: "Not secure"}}}
 
     conn = put conn, resource_path(conn, :update, resource), data
@@ -91,7 +78,7 @@ defmodule EmberWeekendApi.ResourceControllerTest do
   end
 
   test "unauthenticated user can't delete resource", %{conn: conn} do
-    resource = Repo.insert! Map.merge(%Resource{}, @valid_attrs)
+    resource = insert(:resource)
 
     conn = delete conn, resource_path(conn, :update, resource)
 
@@ -103,7 +90,7 @@ defmodule EmberWeekendApi.ResourceControllerTest do
 
   test "non-admin user can't update resource", %{conn: conn} do
     conn = authenticated(conn)
-    resource = Repo.insert! Map.merge(%Resource{}, @valid_attrs)
+    resource = insert(:resource)
     data = %{data: %{attributes: %{title: "Not secure"}}}
 
     conn = put conn, resource_path(conn, :update, resource), data
@@ -116,7 +103,7 @@ defmodule EmberWeekendApi.ResourceControllerTest do
 
   test "non-admin user can't delete resource", %{conn: conn} do
     conn = authenticated(conn)
-    resource = Repo.insert! Map.merge(%Resource{}, @valid_attrs)
+    resource = insert(:resource)
 
     conn = delete conn, resource_path(conn, :update, resource)
 
@@ -128,7 +115,7 @@ defmodule EmberWeekendApi.ResourceControllerTest do
 
   test "admin user can create resource", %{conn: conn} do
     conn = admin(conn)
-    person = Repo.insert! Map.merge(%Person{}, @valid_person_attrs)
+    person = insert(:person)
     attributes = @valid_attrs
       |> dasherize_keys
     data = %{
@@ -163,7 +150,7 @@ defmodule EmberWeekendApi.ResourceControllerTest do
 
   test "admin user can update resource", %{conn: conn} do
     conn = admin(conn)
-    resource = Repo.insert! Map.merge(%Resource{}, @valid_attrs)
+    resource = insert(:resource)
     attributes = %{title: "Better Title"}
     data = %{data: %{id: "#{resource.id}", type: "resources", attributes: attributes}}
 
@@ -191,7 +178,7 @@ defmodule EmberWeekendApi.ResourceControllerTest do
 
   test "admin user sees validation messages when updating resource", %{conn: conn} do
     conn = admin(conn)
-    resource = Repo.insert! Map.merge(%Resource{}, @valid_attrs)
+    resource = insert(:resource)
     data = %{data: %{id: "#{resource.id}", type: "resources", attributes: %{"title" => nil}}}
 
     conn = put conn, resource_path(conn, :update, resource), data
@@ -204,7 +191,7 @@ defmodule EmberWeekendApi.ResourceControllerTest do
 
   test "admin user can delete resource", %{conn: conn} do
     conn = admin(conn)
-    resource = Repo.insert! Map.merge(%Resource{}, @valid_attrs)
+    resource = insert(:resource)
 
     conn = delete conn, resource_path(conn, :update, resource)
 

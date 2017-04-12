@@ -1,6 +1,6 @@
 defmodule EmberWeekendApi.Factory do
   use ExMachina.Ecto, repo: EmberWeekendApi.Repo
-  alias EmberWeekendApi.Web.{Episode, Person, Resource, ShowNote, ResourceAuthor}
+  alias EmberWeekendApi.Web.{Episode, Person, Resource, ShowNote, ResourceAuthor, LinkedAccount, User}
 
   def episode_factory do
     title = Faker.Lorem.words(%Range{first: 1, last: 8})
@@ -54,4 +54,21 @@ defmodule EmberWeekendApi.Factory do
     }
   end
 
+  def user_factory() do
+    %User{
+      name: "Rick Sanchez",
+      username: "tinyrick",
+    }
+  end
+
+  def linked_account_factory() do
+    %LinkedAccount{
+      username: "tinyrick",
+      provider: "github",
+      access_token: "valid_token",
+      provider_id: "1",
+      user: build(:user)
+    }
+  end
 end
+

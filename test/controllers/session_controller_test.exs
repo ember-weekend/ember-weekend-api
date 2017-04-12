@@ -1,8 +1,5 @@
 defmodule EmberWeekendApi.SessionControllerTest do
   use EmberWeekendApi.Web.ConnCase
-  alias EmberWeekendApi.Web.User
-  alias EmberWeekendApi.Web.Session
-  alias EmberWeekendApi.Web.LinkedAccount
 
   @valid_params   %{
     data: %{
@@ -16,13 +13,6 @@ defmodule EmberWeekendApi.SessionControllerTest do
         provider: "github", code: "invalid_code", state: "123456"
       }
   }}
-  @valid_linked   %{
-    username: "tinyrick",
-    provider: "github",
-    access_token: "valid_token",
-    provider_id: "1"
-  }
-  @github_user    %{"name" => "Rick Sanchez", "username" => "tinyrick"}
 
   defp setup_conn(conn) do
     conn = conn
@@ -36,65 +26,49 @@ defmodule EmberWeekendApi.SessionControllerTest do
   end
 
   test "if not present, creates a user for the github account", %{conn: conn} do
-
     conn = post conn, session_path(conn, :create), @valid_params
 
     assert conn.status == 201
     assert json_api_response(conn)["data"]["attributes"]["token"]
 
-    included = json_api_response(conn)["included"] |> List.first
+    assert [included] = json_api_response(conn)["included"]
 
     assert included["type"] == "users"
-    assert included["attributes"] == @github_user
+    assert included["attributes"] == %{
+      "name" => params_for(:user).name,
+      "username" => params_for(:user).username
+    }
 
-    assert LinkedAccount.count == 1
-    assert Session.count == 1
-    assert User.count == 1
+    assert db_user = Repo.get_by(User, username: EmberWeekendApi.Github.Stub.username)
+    assert Repo.one(assoc(db_user, :sessions))
 
-    user = User.first
-    assert user.name == "Rick Sanchez"
-    assert user.username == "tinyrick"
-
-    linked = LinkedAccount.first
-    assert linked.user_id == user.id
+    assert linked = Repo.one(assoc(db_user, :linked_accounts))
     assert linked.provider == "github"
     assert linked.provider_id == "1"
-    assert linked.username == "tinyrick"
-
-    session = Session.first
-    assert session.user_id == user.id
-
   end
 
   test "signs in existing user with linked github account", %{conn: conn} do
-    user = Repo.insert! User.changeset %User{}, @github_user
-    Repo.insert! LinkedAccount.changeset %LinkedAccount{
-      user_id: user.id,
-      provider: "github",
-      provider_id: "1"
-    }, @valid_linked
+    user = insert(:linked_account).user
 
     conn = post conn, session_path(conn, :create), @valid_params
 
     assert conn.status == 201
     assert json_api_response(conn)["data"]["attributes"]["token"]
 
-    included = json_api_response(conn)["included"] |> List.first
+    [included] = json_api_response(conn)["included"]
 
     assert included["type"] == "users"
-    assert included["attributes"] == @github_user
+    assert included["attributes"] == %{
+      "name" => user.name,
+      "username" => user.username
+    }
 
-    assert LinkedAccount.count == 1
-    assert Session.count == 1
-    assert User.count == 1
+    assert db_user = Repo.get(User, user.id)
+    assert Repo.one(assoc(db_user, :sessions))
 
-    linked = LinkedAccount.first
-    assert linked.user_id == user.id
+    assert linked = Repo.one(assoc(db_user, :linked_accounts))
     assert linked.provider == "github"
     assert linked.provider_id == "1"
-
-    session = Session.first
-    assert session.user_id == user.id
 
     conn = build_conn()
     {:ok, conn: conn} = setup_conn conn
@@ -103,29 +77,27 @@ defmodule EmberWeekendApi.SessionControllerTest do
   end
 
   test "signs in existing user and links github account", %{conn: conn} do
-    user = Repo.insert! User.changeset %User{}, @github_user
+    user = insert(:user, username: "tinyrick")
 
     conn = post conn, session_path(conn, :create), @valid_params
 
     assert conn.status == 201
     assert json_api_response(conn)["data"]["attributes"]["token"]
 
-    included = json_api_response(conn)["included"] |> List.first
+    assert [included] = json_api_response(conn)["included"]
 
     assert included["type"] == "users"
-    assert included["attributes"] == @github_user
+    assert included["attributes"] == %{
+      "name" => user.name,
+      "username" => user.username
+    }
 
-    assert LinkedAccount.count == 1
-    assert Session.count == 1
-    assert User.count == 1
+    assert db_user = Repo.get(User, user.id)
+    assert Repo.one(assoc(db_user, :sessions))
 
-    linked = LinkedAccount.first
-    assert linked.user_id == user.id
+    assert linked = Repo.one(assoc(db_user, :linked_accounts))
     assert linked.provider == "github"
     assert linked.provider_id == "1"
-
-    session = Session.first
-    assert session.user_id == user.id
   end
 
   test "returns an error if the code is invalid", %{conn: conn} do
@@ -133,9 +105,8 @@ defmodule EmberWeekendApi.SessionControllerTest do
 
     assert conn.status == 422
     json = json_api_response(conn)
-    error = json["errors"] |> List.first
+    assert [error] = json["errors"]
 
-    assert json["errors"] |> Enum.count == 1
     assert error["status"] == 422
     assert error["title"]  == "Failed to create session"
     assert error["detail"] == "Invalid code"
@@ -147,7 +118,7 @@ defmodule EmberWeekendApi.SessionControllerTest do
 
   test "signs out", %{conn: conn} do
     token = "VALID"
-    session = Repo.insert! %Session{ token: token}
+    session = Repo.insert! %Session{token: token}
 
     conn = delete conn, "/api/sessions/#{token}"
 
@@ -162,9 +133,7 @@ defmodule EmberWeekendApi.SessionControllerTest do
 
     assert conn.status == 404
     json = json_api_response(conn)
-    error = json["errors"] |> List.first
-
-    assert json["errors"] |> Enum.count == 1
+    assert [error] = json["errors"]
 
     assert error["status"] == 404
     assert error["title"]  == "Failed to delete session"

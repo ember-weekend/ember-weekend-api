@@ -1,35 +1,5 @@
 defmodule EmberWeekendApi.ShowNoteControllerTest do
   use EmberWeekendApi.Web.ConnCase
-  alias EmberWeekendApi.Web.ShowNote
-  alias EmberWeekendApi.Web.Resource
-  alias EmberWeekendApi.Web.Person
-  alias EmberWeekendApi.Web.ResourceAuthor
-  alias EmberWeekendApi.Web.Episode
-
-  @valid_attrs %{time_stamp: "01:14"}
-
-  @valid_resource_attrs %{
-    title: "Plumbuses",
-    url: "http://rickandmorty.wikia.com/wiki/Plumbus"
-  }
-
-  @valid_person_attrs %{
-    name: "Jerry Smith",
-    handle: "dr_pluto",
-    tagline: "Well look where being smart got you.",
-    bio: "Jerry can sometimes become misguided by his insecurities.",
-    url: "http://rickandmorty.wikia.com/wiki/Jerry_Smith",
-    avatar_url: "http://vignette3.wikia.nocookie.net/rickandmorty/images/5/5d/Jerry_S01E11_Sad.JPG/revision/latest?cb=20140501090439"
-  }
-
-  @valid_episode_attrs %{
-    title: "Anatomy Park",
-    description: "Rick and Morty try to save the life of a homeless man; Jerry's parents visit.",
-    slug: "anatomy-park",
-    release_date: Timex.to_date({2013, 12, 15}),
-    filename: "s01e03",
-    duration: "1:00:00"
-  }
 
   setup %{conn: conn} do
     conn = conn
@@ -94,23 +64,20 @@ defmodule EmberWeekendApi.ShowNoteControllerTest do
       "links" => %{"self" => "/api/show-notes/#{show_note.id}"},
       "id" => "#{show_note.id}",
       "type" => "show-notes",
-      "attributes" => @valid_attrs
-                    |> string_keys
-                    |> dasherize_keys
+      "attributes" => %{"time-stamp" => "01:14"}
     }]
   end
 
   test "admin user can create show note", %{conn: conn} do
     conn = admin(conn)
-    person = Repo.insert! Map.merge(%Person{}, @valid_person_attrs)
-    resource = Repo.insert! Map.merge(%Resource{}, @valid_resource_attrs)
-    Repo.insert! %ResourceAuthor{resource_id: resource.id, author_id: person.id}
-    episode = Repo.insert! Map.merge(%Episode{}, @valid_episode_attrs)
+    ra = insert(:resource_author)
+    resource = ra.resource
+    episode = insert(:episode)
 
     data = %{
       data: %{
         type: "show-notes",
-        attributes: @valid_attrs,
+        attributes: %{"time-stamp" => "01:14"},
         relationships: %{
           "resource" => %{ "data" => %{ "type" => "resources", "id" => "#{resource.id}" } },
           "episode"  => %{ "data" => %{ "type" => "episodes",  "id" => "#{episode.id}"  } }
@@ -126,9 +93,7 @@ defmodule EmberWeekendApi.ShowNoteControllerTest do
       "id" => "#{show_note_id}",
       "type" => "show-notes",
       "links" => %{"self" => "/api/show-notes/#{show_note_id}"},
-      "attributes" => @valid_attrs
-                    |> string_keys
-                    |> dasherize_keys,
+      "attributes" => %{"time-stamp" => "01:14"},
       "relationships" => %{
         "resource" => %{ "data" => %{ "type" => "resources", "id" => "#{resource.id}" } },
         "episode"  => %{ "data" => %{ "type" => "episodes",  "id" => "#{episode.id}"  } }
@@ -140,11 +105,10 @@ defmodule EmberWeekendApi.ShowNoteControllerTest do
 
   test "admin user can update show note attributes", %{conn: conn} do
     conn = admin(conn)
-    person = Repo.insert! Map.merge(%Person{}, @valid_person_attrs)
-    resource = Repo.insert! Map.merge(%Resource{}, @valid_resource_attrs)
-    Repo.insert! %ResourceAuthor{resource_id: resource.id, author_id: person.id}
-    episode = Repo.insert! Map.merge(%Episode{}, @valid_episode_attrs)
-    show_note = Repo.insert! Map.merge(%ShowNote{episode_id: episode.id, resource_id: resource.id}, @valid_attrs)
+    ra = insert(:resource_author)
+    resource = ra.resource
+    show_note = insert(:show_note, resource: resource)
+    episode = show_note.episode
 
     updated_attrs = %{time_stamp: "10:00"}
     data = %{
@@ -180,14 +144,11 @@ defmodule EmberWeekendApi.ShowNoteControllerTest do
 
   test "admin user can update show note relationships", %{conn: conn} do
     conn = admin(conn)
-    person = Repo.insert! Map.merge(%Person{}, @valid_person_attrs)
-    resource1 = Repo.insert! Map.merge(%Resource{}, @valid_resource_attrs)
-    resource2 = Repo.insert! Map.merge(%Resource{}, @valid_resource_attrs)
-    Repo.insert! %ResourceAuthor{resource_id: resource1.id, author_id: person.id}
-    Repo.insert! %ResourceAuthor{resource_id: resource2.id, author_id: person.id}
-    episode1 = Repo.insert! Map.merge(%Episode{}, @valid_episode_attrs)
-    episode2 = Repo.insert! Map.merge(%Episode{}, @valid_episode_attrs)
-    show_note = Repo.insert! Map.merge(%ShowNote{episode_id: episode1.id, resource_id: resource1.id}, @valid_attrs)
+    ra1 = insert(:resource_author)
+    show_note1 = insert(:show_note, resource: ra1.resource)
+
+    ra2 = insert(:resource_author)
+    episode2 = insert(:episode)
 
     updated_attrs = %{time_stamp: "10:00"}
     data = %{
@@ -195,13 +156,13 @@ defmodule EmberWeekendApi.ShowNoteControllerTest do
         type: "show-notes",
         attributes: updated_attrs,
         relationships: %{
-          "resource" => %{ "data" => %{ "type" => "resources", "id" => "#{resource2.id}" } },
+          "resource" => %{ "data" => %{ "type" => "resources", "id" => "#{ra2.resource.id}" } },
           "episode"  => %{ "data" => %{ "type" => "episodes",  "id" => "#{episode2.id}"  } }
         }
       }
     }
 
-    conn = put conn, show_note_path(conn, :update, show_note), data
+    conn = put conn, show_note_path(conn, :update, show_note1), data
 
     assert conn.status == 200
     show_note_id = String.to_integer json_api_response(conn)["data"]["id"]
@@ -213,7 +174,7 @@ defmodule EmberWeekendApi.ShowNoteControllerTest do
                     |> string_keys
                     |> dasherize_keys,
       "relationships" => %{
-        "resource" => %{ "data" => %{ "type" => "resources", "id" => "#{resource2.id}" } },
+        "resource" => %{ "data" => %{ "type" => "resources", "id" => "#{ra2.resource.id}" } },
         "episode"  => %{ "data" => %{ "type" => "episodes",  "id" => "#{episode2.id}"  } }
       }
     }
@@ -223,11 +184,7 @@ defmodule EmberWeekendApi.ShowNoteControllerTest do
 
   test "admin user can delete show note", %{conn: conn} do
     conn = admin(conn)
-    person = Repo.insert! Map.merge(%Person{}, @valid_person_attrs)
-    resource = Repo.insert! Map.merge(%Resource{}, @valid_resource_attrs)
-    Repo.insert! %ResourceAuthor{resource_id: resource.id, author_id: person.id}
-    episode = Repo.insert! Map.merge(%Episode{}, @valid_episode_attrs)
-    show_note = Repo.insert! Map.merge(%ShowNote{episode_id: episode.id, resource_id: resource.id}, @valid_attrs)
+    show_note = insert(:show_note)
 
     conn = delete conn, show_note_path(conn, :update, show_note)
 

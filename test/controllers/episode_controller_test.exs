@@ -1,12 +1,13 @@
 defmodule EmberWeekendApi.EpisodeControllerTest do
   use EmberWeekendApi.Web.ConnCase
 
+  @release_date ~D[2013-12-15]
   @valid_attrs %{
     number: 1,
     title: "Anatomy Park",
     description: "Rick and Morty try to save the life of a homeless man; Jerry's parents visit.",
     slug: "anatomy-park",
-    release_date: Timex.to_date({2013, 12, 15}),
+    release_date: @release_date,
     filename: "s01e03",
     duration: "1:00:00",
     published: true,
@@ -39,8 +40,9 @@ defmodule EmberWeekendApi.EpisodeControllerTest do
   end
 
   test "lists all published episodes on index", %{conn: conn} do
-    episode = Repo.insert! Map.merge(%Episode{}, @valid_attrs)
-    Repo.insert! Map.merge(%Episode{}, Map.merge(@valid_attrs, %{number: 2, published: false}))
+    attrs = params_for(:episode, published: true, release_date: @release_date)
+    episode = insert(:episode, attrs)
+    _unpublished = insert(:episode, published: false)
     conn = get conn, episode_path(conn, :index)
 
     assert conn.status == 200
@@ -48,7 +50,7 @@ defmodule EmberWeekendApi.EpisodeControllerTest do
     assert json_api_response(conn)["data"] == [%{
       "id" => "#{episode.id}",
       "type" => "episodes",
-      "attributes" => @valid_attrs
+      "attributes" => attrs
                       |> string_keys
                       |> dasherize_keys
                       |> convert_dates
@@ -57,8 +59,8 @@ defmodule EmberWeekendApi.EpisodeControllerTest do
 
   test "admin user lists all episodes on index", %{conn: conn} do
     conn = admin(conn)
-    episode = Repo.insert! Map.merge(%Episode{}, @valid_attrs)
-    unpublished = Repo.insert! Map.merge(%Episode{}, Map.merge(@valid_attrs, %{number: 2, published: false}))
+    episode = insert(:episode)
+    unpublished = insert(:episode, number: 2, published: false)
 
     conn = get conn, episode_path(conn, :index)
 
@@ -67,7 +69,7 @@ defmodule EmberWeekendApi.EpisodeControllerTest do
   end
 
   test "non-admin user gets 404 for unpublished episode", %{conn: conn} do
-    episode = Repo.insert! Map.merge(%Episode{}, Map.merge(@valid_attrs, %{published: false}))
+    episode = insert(:episode, published: false)
 
     conn = get conn, episode_path(conn, :show, episode)
 
@@ -76,7 +78,7 @@ defmodule EmberWeekendApi.EpisodeControllerTest do
 
   test "admin user views unpublished episode", %{conn: conn} do
     conn = admin(conn)
-    episode = Repo.insert! Map.merge(%Episode{}, Map.merge(@valid_attrs, %{published: false}))
+    episode = insert(:episode, published: false)
 
     conn = get conn, episode_path(conn, :show, episode)
 
@@ -84,14 +86,13 @@ defmodule EmberWeekendApi.EpisodeControllerTest do
   end
 
   test "shows episode", %{conn: conn} do
-    episode = Repo.insert! Map.merge(%Episode{}, @valid_attrs)
-    person = Repo.insert! Map.merge(%Person{}, @valid_person_attrs)
-    resource = Repo.insert! Map.merge(%Resource{}, @valid_resource_attrs)
-    Repo.insert! %ResourceAuthor{resource_id: resource.id, author_id: person.id}
+    attrs = params_for(:episode, published: true, release_date: @release_date)
+    ra = insert(:resource_author)
+    person = ra.author
+    resource = ra.resource
+    episode = insert(:episode, attrs)
+    show_note = insert(:show_note, resource: resource, episode: episode)
     Repo.insert! %EpisodeGuest{episode_id: episode.id, guest_id: person.id}
-    show_note = Repo.insert! Map.merge(%ShowNote{
-      episode_id: episode.id, resource_id: resource.id
-    }, @valid_show_note_attrs)
 
     conn = get conn, episode_path(conn, :show, episode)
 
@@ -99,7 +100,7 @@ defmodule EmberWeekendApi.EpisodeControllerTest do
     assert json_api_response(conn)["data"] == %{
       "id" => "#{episode.id}",
       "type" => "episodes",
-      "attributes" => @valid_attrs
+      "attributes" => attrs
                       |> string_keys
                       |> dasherize_keys
                       |> convert_dates,
@@ -155,14 +156,13 @@ defmodule EmberWeekendApi.EpisodeControllerTest do
   end
 
   test "shows episode by slug", %{conn: conn} do
-    episode = Repo.insert! Map.merge(%Episode{}, @valid_attrs)
-    person = Repo.insert! Map.merge(%Person{}, @valid_person_attrs)
-    resource = Repo.insert! Map.merge(%Resource{}, @valid_resource_attrs)
-    Repo.insert! %ResourceAuthor{resource_id: resource.id, author_id: person.id}
+    attrs = params_for(:episode, published: true, release_date: @release_date)
+    ra = insert(:resource_author)
+    person = ra.author
+    resource = ra.resource
+    episode = insert(:episode, attrs)
+    show_note = insert(:show_note, resource: resource, episode: episode)
     Repo.insert! %EpisodeGuest{episode_id: episode.id, guest_id: person.id}
-    show_note = Repo.insert! Map.merge(%ShowNote{
-      episode_id: episode.id, resource_id: resource.id
-    }, @valid_show_note_attrs)
 
     conn = get conn, episode_path(conn, :show, episode.slug)
 
@@ -170,7 +170,7 @@ defmodule EmberWeekendApi.EpisodeControllerTest do
     assert json_api_response(conn)["data"] == %{
       "id" => "#{episode.id}",
       "type" => "episodes",
-      "attributes" => @valid_attrs
+      "attributes" => attrs
                       |> string_keys
                       |> dasherize_keys
                       |> convert_dates,
@@ -233,30 +233,28 @@ defmodule EmberWeekendApi.EpisodeControllerTest do
   end
 
   test "unauthenticated user can't update episode", %{conn: conn} do
-    episode = Repo.insert! Map.merge(%Episode{}, @valid_attrs)
+    episode = insert(:episode, published: true)
     data = %{data: %{attributes: %{title: "Not secure"}}}
 
     conn = put conn, episode_path(conn, :update, episode), data
 
     assert conn.status == 401
     assert json_api_response(conn)["errors"] == unauthorized("episode", "update")
-    episode = Repo.get!(Episode, episode.id)
-    assert episode.title == @valid_attrs[:title]
+    assert Repo.get!(Episode, episode.id)
   end
 
   test "unauthenticated user can't delete episode", %{conn: conn} do
-    episode = Repo.insert! Map.merge(%Episode{}, @valid_attrs)
+    episode = insert(:episode, published: true)
 
     conn = delete conn, episode_path(conn, :update, episode)
 
     assert conn.status == 401
     assert json_api_response(conn)["errors"] == unauthorized("episode", "delete")
-    episode = Repo.get!(Episode, episode.id)
-    assert episode
+    assert Repo.get!(Episode, episode.id)
   end
 
   test "unauthenticated user can't create episode", %{conn: conn} do
-    params = Map.merge(@valid_attrs, %{release_date: "2013-12-15"})
+    params = params_for(:episode, release_date: @release_date)
 
     conn = post conn, episode_path(conn, :create), params
 
@@ -267,20 +265,19 @@ defmodule EmberWeekendApi.EpisodeControllerTest do
 
   test "non-admin user can't update episode", %{conn: conn} do
     conn = authenticated(conn)
-    episode = Repo.insert! Map.merge(%Episode{}, @valid_attrs)
+    episode = insert(:episode)
     data = %{data: %{attributes: %{title: "Not secure"}}}
 
     conn = put conn, episode_path(conn, :update, episode), data
 
     assert conn.status == 401
     assert json_api_response(conn)["errors"] == unauthorized("episode", "update")
-    episode = Repo.get!(Episode, episode.id)
-    assert episode.title == @valid_attrs[:title]
+    assert Repo.get!(Episode, episode.id)
   end
 
   test "non-admin user can't delete episode", %{conn: conn} do
     conn = authenticated(conn)
-    episode = Repo.insert! Map.merge(%Episode{}, @valid_attrs)
+    episode = insert(:episode)
 
     conn = delete conn, episode_path(conn, :update, episode)
 
@@ -292,7 +289,7 @@ defmodule EmberWeekendApi.EpisodeControllerTest do
 
   test "non-admin user can't create episode", %{conn: conn} do
     conn = authenticated(conn)
-    params = Map.merge(@valid_attrs, %{release_date: "2013-12-15"})
+    params = params_for(:episode, release_date: @release_date)
 
     conn = post conn, episode_path(conn, :create), params
 
@@ -303,7 +300,7 @@ defmodule EmberWeekendApi.EpisodeControllerTest do
 
   test "admin user can delete episode", %{conn: conn} do
     conn = admin(conn)
-    episode = Repo.insert! Map.merge(%Episode{}, @valid_attrs)
+    episode = insert(:episode)
 
     conn = delete conn, episode_path(conn, :update, episode)
 
@@ -313,7 +310,7 @@ defmodule EmberWeekendApi.EpisodeControllerTest do
 
   test "admin user can create episode", %{conn: conn} do
     conn = admin(conn)
-    person = Repo.insert! Map.merge(%Person{}, @valid_person_attrs)
+    person = insert(:person)
     attributes = @valid_attrs
       |> Map.delete(:release_date)
       |> Map.merge(%{"release-date": "2013-12-15"})
@@ -355,7 +352,7 @@ defmodule EmberWeekendApi.EpisodeControllerTest do
 
   test "admin user can update episode", %{conn: conn} do
     conn = admin(conn)
-    episode = Repo.insert! Map.merge(%Episode{}, @valid_attrs)
+    episode = insert(:episode)
     attributes = %{title: "Better title"}
     data = %{data: %{id: "#{episode.id}", type: "episodes", attributes: attributes}}
 
@@ -390,7 +387,7 @@ defmodule EmberWeekendApi.EpisodeControllerTest do
 
   test "admin user sees validation messages when updating episode", %{conn: conn} do
     conn = admin(conn)
-    episode = Repo.insert! Map.merge(%Episode{}, @valid_attrs)
+    episode = insert(:episode)
     data = %{data: %{id: "#{episode.id}", type: "episodes", attributes: %{ title: nil }}}
       |> string_keys
       |> dasherize_keys

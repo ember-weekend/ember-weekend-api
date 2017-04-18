@@ -22,8 +22,7 @@ admins = Map.fetch!(System.get_env(), "ADMINS")
 config :ember_weekend_api, :admins, admins
 
 config :ember_weekend_api,
-  EmberWeekendApi.Github,
-    client_id: Map.fetch!(System.get_env(), "GITHUB_CLIENT_ID"),
-    client_secret: Map.fetch!(System.get_env(), "GITHUB_CLIENT_SECRET"),
-    redirect_uri: Map.fetch!(System.get_env(), "GITHUB_REDIRECT_URI")
+    github_client_id: Map.fetch!(System.get_env(), "GITHUB_CLIENT_ID"),
+    github_client_secret: Map.fetch!(System.get_env(), "GITHUB_CLIENT_SECRET"),
+    github_redirect_uri: Map.fetch!(System.get_env(), "GITHUB_REDIRECT_URI")
 

@@ -47,15 +47,15 @@ defmodule EmberWeekendApi.Github.HTTPClient do
     end
   end
 
-  defp client_id do
-    Application.fetch_env!(EmberWeekendApi.Github, :client_id)
+  def client_id do
+    Application.fetch_env!(:ember_weekend_api, :client_id)
   end
 
   defp client_secret do
-    Application.fetch_env!(EmberWeekendApi.Github, :client_secret)
+    Application.fetch_env!(:ember_weekend_api, :client_secret)
   end
 
   defp redirect_uri do
-    Application.fetch_env!(EmberWeekendApi.Github, :redirect_uri)
+    Application.fetch_env!(:ember_weekend_api, :redirect_uri)
   end
 end

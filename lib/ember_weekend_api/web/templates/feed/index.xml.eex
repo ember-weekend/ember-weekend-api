@@ -7,7 +7,7 @@
     <description>Ember.js is a frontend JavaScript framework that has exciting applications. In this podcasts we share news, events, and some of our experiences.</description>
     <copyright>© 2017 Chase McCarthy &amp; Jonathan Jackson</copyright>
     <language>en-us</language>
-    <pubDate></pubDate>
+    <pubDate><%= pub_date(episodes(@conn)) %></pubDate>
     <lastBuildDate></lastBuildDate>
     <link>https://emberweekend.com</link>
     <image>
@@ -44,7 +44,7 @@
           ]]>
         </content:encoded>
         <pubDate><%= release_date(episode) %></pubDate>
-        <author>Chase McCarthy, Jonathan Jackson</author>
+        <author>chase@code0100fun.com (Chase McCarthy, Jonathan Jackson)</author>
         <enclosure url="https://emberweekend.s3.amazonaws.com/ep-<%= episode.number %>-ember-weekend.mp3" length="<%= episode.length %>" type="audio/mpeg"/>
         <itunes:author>Chase McCarthy, Jonathan Jackson</itunes:author>
         <itunes:image href="https://i.imgur.com/YyAd2Ee.png"/>

@@ -32,7 +32,10 @@ defmodule EmberWeekendApi.Web.FeedView do
   end
 
   def show_notes(model) do
-    model.show_notes
+    case model.show_notes do
+      nil -> []
+      show_notes -> Enum.sort(show_notes, &(&1.time_stamp < &2.time_stamp))
+    end
   end
 
   def guests(model) do

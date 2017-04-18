@@ -8,7 +8,7 @@
     <copyright>© 2017 Chase McCarthy &amp; Jonathan Jackson</copyright>
     <language>en-us</language>
     <pubDate><%= pub_date(episodes(@conn)) %></pubDate>
-    <lastBuildDate></lastBuildDate>
+    <lastBuildDate><%= last_build_date(episodes(@conn)) %></lastBuildDate>
     <link>https://emberweekend.com</link>
     <image>
       <url>https://i.imgur.com/YyAd2Ee.png</url>

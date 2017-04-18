@@ -15,8 +15,20 @@ defmodule EmberWeekendApi.Web.FeedView do
   end
 
   def pub_date(episodes) do
-    [most_recent | _] = episodes
-    release_date(most_recent)
+    case episodes do
+      [most_recent | _] -> episodes
+        release_date(most_recent)
+      [] -> nil
+    end
+  end
+
+  def last_build_date(episodes) do
+    case episodes do
+      [most_recent | _] -> Enum.sort(episodes, &(Timex.after?(&1.updated_at, &2.updated_at)))
+        {:ok, date} = rfc_2822_date(most_recent.updated_at)
+        date
+      [] -> nil
+    end
   end
 
   def show_notes(model) do

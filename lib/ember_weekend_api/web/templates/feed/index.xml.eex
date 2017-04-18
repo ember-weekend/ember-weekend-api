@@ -25,8 +25,9 @@
       <itunes:name>Chase McCarthy</itunes:name>
       <itunes:email>chase@code0100fun.com</itunes:email>
     </itunes:owner>
-    <itunes:category text="Technology"/>
-    <itunes:category text="Tech News"/>
+    <itunes:category text="Technology">
+      <itunes:category text="Tech News"/>
+    </itunes:category>
 
     <%= for episode <- episodes(@conn) do %>
       <item>

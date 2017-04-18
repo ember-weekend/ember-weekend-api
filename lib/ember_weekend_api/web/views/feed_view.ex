@@ -49,4 +49,9 @@ defmodule EmberWeekendApi.Web.FeedView do
   def episode_url(model) do
     "https://emberweekend.com/episodes/#{model.slug}"
   end
+
+  def escape(str) do
+    {:safe, safe} = Phoenix.HTML.html_escape(str)
+    safe
+  end
 end

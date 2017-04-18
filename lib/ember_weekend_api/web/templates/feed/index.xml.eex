@@ -5,7 +5,7 @@
     <title>Ember Weekend</title>
     <generator>Elixir Phoenix</generator>
     <description>Ember.js is a frontend JavaScript framework that has exciting applications. In this podcasts we share news, events, and some of our experiences.</description>
-    <copyright>© 2017 Chase McCarthy &amp; Jonathan Jackson</copyright>
+    <copyright><%= escape("© 2017 Chase McCarthy & Jonathan Jackson") %></copyright>
     <language>en-us</language>
     <pubDate><%= pub_date(episodes(@conn)) %></pubDate>
     <lastBuildDate><%= last_build_date(episodes(@conn)) %></lastBuildDate>
@@ -15,7 +15,7 @@
       <title>Ember Weekend</title>
       <link>https://emberweekend.com</link>
     </image>
-    <itunes:author>Chase McCarthy &amp; Jonathan Jackson</itunes:author>
+    <itunes:author><%= escape("Chase McCarthy & Jonathan Jackson") %></itunes:author>
     <itunes:image href="https://i.imgur.com/YyAd2Ee.png"/>
     <itunes:summary>Ember.js is a frontend JavaScript framework that has exciting applications. In this podcasts we share news, events, and some of our experiences.</itunes:summary>
     <itunes:subtitle>Latest Ember.js news, events, and interesting tidbits.</itunes:subtitle>
@@ -31,7 +31,7 @@
 
     <%= for episode <- episodes(@conn) do %>
       <item>
-        <title>Episode <%= episode.number %>: <%= episode.title %></title>
+        <title>Episode <%= episode.number %>: <%= escape(episode.title) %></title>
         <guid isPermaLink="true"><%= episode_url(episode) %></guid>
         <link><%= episode_url(episode) %></link>
         <description><%= episode.description %></description>

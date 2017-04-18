@@ -54,4 +54,12 @@ defmodule EmberWeekendApi.Web.FeedView do
     {:safe, safe} = Phoenix.HTML.html_escape(str)
     safe
   end
+
+  def resource_url(show_note) do
+    case resource(show_note).url do
+      nil -> nil
+      "" -> nil
+      not_blank -> not_blank
+    end
+  end
 end

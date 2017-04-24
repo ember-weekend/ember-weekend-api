@@ -16,7 +16,7 @@ defmodule EmberWeekendApi.EpisodeControllerTest do
 
   @invalid_attrs %{}
 
-  @valid_show_note_attrs %{time_stamp: "01:14"}
+  @valid_show_note_attrs %{time_stamp: "01:14", note: "Wubalubadub"}
 
   @valid_resource_attrs %{
     title: "Plumbuses",

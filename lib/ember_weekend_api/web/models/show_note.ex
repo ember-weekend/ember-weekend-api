@@ -3,14 +3,15 @@ defmodule EmberWeekendApi.Web.ShowNote do
 
   schema "show_notes" do
     field :time_stamp, :string
+    field :note, :string
     belongs_to :resource, EmberWeekendApi.Web.Resource
     belongs_to :episode, EmberWeekendApi.Web.Episode
 
     timestamps()
   end
 
-  @required_fields ~w(time_stamp resource_id episode_id)a
-  @optional_fields ~w()a
+  @required_fields ~w(time_stamp episode_id)a
+  @optional_fields ~w(note resource_id)a
 
   @doc """
   Creates a changeset based on the `struct` and `params`.

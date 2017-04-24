@@ -22,12 +22,7 @@ defmodule EmberWeekendApi.Web.ShowNoteController do
   end
 
   def create(conn, %{"data" => %{ "relationships" => relationships, "attributes" => attributes}}) do
-    {episode_id,_} = Integer.parse(relationships["episode"]["data"]["id"])
-    {resource_id,_} = Integer.parse(relationships["resource"]["data"]["id"])
-    attributes = Map.merge(attributes, %{
-      "resource_id" => resource_id,
-      "episode_id" => episode_id
-    })
+    attributes = Map.merge(attributes, extract_relationships(relationships))
     changeset = ShowNote.changeset(%ShowNote{}, attributes)
     case Repo.insert(changeset) do
       {:ok, show_note} ->
@@ -42,12 +37,7 @@ defmodule EmberWeekendApi.Web.ShowNoteController do
   end
 
   def update(conn, %{"data" => %{"relationships" => relationships, "attributes" => attributes}, "id" => id}) do
-    {episode_id,_} = Integer.parse(relationships["episode"]["data"]["id"])
-    {resource_id,_} = Integer.parse(relationships["resource"]["data"]["id"])
-    attributes = Map.merge(attributes, %{
-      "resource_id" => resource_id,
-      "episode_id" => episode_id
-    })
+    attributes = Map.merge(attributes, extract_relationships(relationships))
     case Repo.get(ShowNote, id) do
       nil -> not_found(conn)
       show_note ->
@@ -69,5 +59,27 @@ defmodule EmberWeekendApi.Web.ShowNoteController do
         Repo.delete!(show_note)
         send_resp(conn, :no_content, "")
     end
+  end
+
+  defp extract_relationships(relationships) do
+    attributes = %{}
+
+    episode_id = relationships["episode"]["data"]["id"]
+    attributes = case episode_id do
+      nil -> attributes
+      episode_id ->
+        {episode_id,_} = Integer.parse(episode_id)
+        Map.merge(attributes, %{"episode_id" => episode_id})
+    end
+
+    resource_id = relationships["resource"]["data"]["id"]
+    attributes = case resource_id do
+      nil -> attributes
+      resource_id ->
+        {resource_id,_} = Integer.parse(resource_id)
+        Map.merge(attributes, %{"resource_id" => resource_id})
+    end
+
+    attributes
   end
 end

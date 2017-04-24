@@ -64,7 +64,7 @@ defmodule EmberWeekendApi.ShowNoteControllerTest do
       "links" => %{"self" => "/api/show-notes/#{show_note.id}"},
       "id" => "#{show_note.id}",
       "type" => "show-notes",
-      "attributes" => %{"time-stamp" => "01:14"}
+      "attributes" => %{"time-stamp" => "01:14", "note" => "Wubalubadub"}
     }]
   end
 
@@ -77,7 +77,7 @@ defmodule EmberWeekendApi.ShowNoteControllerTest do
     data = %{
       data: %{
         type: "show-notes",
-        attributes: %{"time-stamp" => "01:14"},
+        attributes: %{"time-stamp" => "01:14", "note" => "My Note"},
         relationships: %{
           "resource" => %{ "data" => %{ "type" => "resources", "id" => "#{resource.id}" } },
           "episode"  => %{ "data" => %{ "type" => "episodes",  "id" => "#{episode.id}"  } }
@@ -93,7 +93,7 @@ defmodule EmberWeekendApi.ShowNoteControllerTest do
       "id" => "#{show_note_id}",
       "type" => "show-notes",
       "links" => %{"self" => "/api/show-notes/#{show_note_id}"},
-      "attributes" => %{"time-stamp" => "01:14"},
+      "attributes" => %{"time-stamp" => "01:14", "note" => "My Note"},
       "relationships" => %{
         "resource" => %{ "data" => %{ "type" => "resources", "id" => "#{resource.id}" } },
         "episode"  => %{ "data" => %{ "type" => "episodes",  "id" => "#{episode.id}"  } }
@@ -103,6 +103,39 @@ defmodule EmberWeekendApi.ShowNoteControllerTest do
     assert Repo.get!(ShowNote, show_note_id)
   end
 
+  test "admin user can create show note without resource", %{conn: conn} do
+    conn = admin(conn)
+    episode = insert(:episode)
+
+    data = %{
+      data: %{
+        type: "show-notes",
+        attributes: %{"time-stamp" => "01:14", "note" => "My Note"},
+        relationships: %{
+          "episode"  => %{ "data" => %{ "type" => "episodes",  "id" => "#{episode.id}"  } }
+        }
+      }
+    }
+
+    conn = post conn, show_note_path(conn, :create), data
+
+    assert conn.status == 201
+    show_note_id = String.to_integer json_api_response(conn)["data"]["id"]
+    assert json_api_response(conn)["data"] == %{
+      "id" => "#{show_note_id}",
+      "type" => "show-notes",
+      "links" => %{"self" => "/api/show-notes/#{show_note_id}"},
+      "attributes" => %{"time-stamp" => "01:14", "note" => "My Note"},
+      "relationships" => %{
+        "resource" => %{ "data" => nil },
+        "episode"  => %{ "data" => %{ "type" => "episodes",  "id" => "#{episode.id}"  } }
+      }
+    }
+    assert ShowNote.count == 1
+    assert Repo.get!(ShowNote, show_note_id)
+  end
+
+
   test "admin user can update show note attributes", %{conn: conn} do
     conn = admin(conn)
     ra = insert(:resource_author)
@@ -110,7 +143,7 @@ defmodule EmberWeekendApi.ShowNoteControllerTest do
     show_note = insert(:show_note, resource: resource)
     episode = show_note.episode
 
-    updated_attrs = %{time_stamp: "10:00"}
+    updated_attrs = %{time_stamp: "10:00", note: "A Note"}
     data = %{
       data: %{
         type: "show-notes",
@@ -150,7 +183,7 @@ defmodule EmberWeekendApi.ShowNoteControllerTest do
     ra2 = insert(:resource_author)
     episode2 = insert(:episode)
 
-    updated_attrs = %{time_stamp: "10:00"}
+    updated_attrs = %{time_stamp: "10:00", note: "A Note"}
     data = %{
       data: %{
         type: "show-notes",

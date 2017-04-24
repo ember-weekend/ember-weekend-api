@@ -51,6 +51,7 @@ defmodule EmberWeekendApi.Factory do
       episode: build(:episode),
       resource: build(:resource),
       time_stamp: "01:14",
+      note: "Wubalubadub",
     }
   end
 

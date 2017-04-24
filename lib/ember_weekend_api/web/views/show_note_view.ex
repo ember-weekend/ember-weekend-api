@@ -5,7 +5,7 @@ defmodule EmberWeekendApi.Web.ShowNoteView do
   alias EmberWeekendApi.Web.EpisodeView
 
   location "/api/show-notes/:id"
-  attributes [:time_stamp]
+  attributes [:time_stamp, :note]
 
   has_one :resource,
     type: "resources",

@@ -31,23 +31,30 @@ defmodule EmberWeekendApi.Web.FeedView do
     end
   end
 
-  def show_notes(model) do
-    case model.show_notes do
+  def show_notes(episode) do
+    case episode.show_notes do
       nil -> []
       show_notes -> Enum.sort(show_notes, &(&1.time_stamp < &2.time_stamp))
     end
   end
 
-  def guests(model) do
-    model.guests
+  def guests(episode) do
+    episode.guests
   end
 
-  def resource(model) do
-    model.resource
+  def resource(show_note) do
+    show_note.resource
   end
 
-  def episode_url(model) do
-    "https://emberweekend.com/episodes/#{model.slug}"
+  def show_note_title(show_note) do
+    case show_note.resource do
+      nil -> show_note.note
+      resource -> resource.title
+    end
+  end
+
+  def episode_url(episode) do
+    "https://emberweekend.com/episodes/#{episode.slug}"
   end
 
   def escape(str) do
@@ -56,10 +63,13 @@ defmodule EmberWeekendApi.Web.FeedView do
   end
 
   def resource_url(show_note) do
-    case resource(show_note).url do
+    case resource(show_note) do
       nil -> nil
-      "" -> nil
-      not_blank -> not_blank
+      resource -> case resource.url do
+        nil -> nil
+        "" -> nil
+        not_blank -> not_blank
+      end
     end
   end
 end

@@ -40,8 +40,8 @@
           <ul>
             <%= for show_note <- show_notes(episode) do %>
               <li>
-                <%= show_note.time_stamp %> - <%= if resource_url(show_note) != nil do %> <a href="<%= resource_url(show_note) %>"><%= resource(show_note).title %></a>
-              <% else %><%= resource(show_note).title %>
+                <%= show_note.time_stamp %> - <%= if resource_url(show_note) != nil do %> <a href="<%= resource_url(show_note) %>"><%= show_note_title(show_note) %></a>
+              <% else %><%= show_note_title(show_note) %>
               <% end %></li>
             <% end %>
           </ul>

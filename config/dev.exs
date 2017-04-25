@@ -50,6 +50,6 @@ admins = Map.get(System.get_env(), "ADMINS", "code0100fun, rondale-sc")
 
 config :ember_weekend_api, :admins, admins
 
-if File.exists?("dev.secret.exs") do
+if File.exists?("config/dev.secret.exs") do
   import_config "dev.secret.exs"
 end

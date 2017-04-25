@@ -6,7 +6,7 @@ defmodule EmberWeekendApi.Web.FeedView do
   end
 
   defp rfc_2822_date(date) do
-    Timex.Format.DateTime.Formatter.format(date, "%a, %d %b %Y %H:%M:%S %z", :strftime)
+    Timex.Format.DateTime.Formatter.format(date, "%a, %d %b %Y %H:%M:%S EST", :strftime)
   end
 
   def release_date(episode) do

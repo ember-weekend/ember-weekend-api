@@ -49,7 +49,7 @@
         </content:encoded>
         <pubDate><%= release_date(episode) %></pubDate>
         <author>chase@code0100fun.com (Chase McCarthy, Jonathan Jackson)</author>
-        <enclosure url="http://emberweekend.s3.amazonaws.com/ep-<%= episode.number %>-ember-weekend.mp3" length="<%= episode.length %>" type="audio/mpeg"/>
+        <enclosure url="http://emberweekend.s3.amazonaws.com/<%= episode.filename %>.mp3" length="<%= episode.length %>" type="audio/mpeg"/>
         <itunes:author>Chase McCarthy, Jonathan Jackson</itunes:author>
         <itunes:image href="http://i.imgur.com/YyAd2Ee.png"/>
         <itunes:duration><%= episode.duration %></itunes:duration>

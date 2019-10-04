@@ -69,7 +69,7 @@ defmodule EmberWeekendApi.Web.ResourceController do
 
         multi = Multi.new
         |> Multi.update(:resource, changeset)
-        |> Multi.run(:set_resource_authors, fn(%{resource: resource}) ->
+        |> Multi.run(:set_resource_authors, fn(_, %{resource: resource}) ->
           set_resource_authors(%{resource: resource, author_ids: author_ids })
         end)
 

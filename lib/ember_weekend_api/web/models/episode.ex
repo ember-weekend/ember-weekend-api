@@ -10,7 +10,7 @@ defmodule EmberWeekendApi.Web.Episode do
     field :title, :string
     field :description, :string
     field :slug, :string
-    field :release_date, Timex.Ecto.Date
+    field :release_date, :date
     field :filename, :string
     field :duration, :string
     field :published, :boolean
@@ -18,7 +18,7 @@ defmodule EmberWeekendApi.Web.Episode do
     has_many :episode_guests, EpisodeGuest
     has_many :guests, through: [:episode_guests, :guest]
 
-    timestamps()
+    timestamps([type: :utc_datetime_usec])
   end
 
   @required_fields ~w(number title description slug release_date

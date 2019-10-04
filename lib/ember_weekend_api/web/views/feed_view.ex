@@ -24,7 +24,7 @@ defmodule EmberWeekendApi.Web.FeedView do
 
   def last_build_date(episodes) do
     case episodes do
-      [most_recent | _] -> Enum.sort(episodes, &(Timex.after?(&1.updated_at, &2.updated_at)))
+      [most_recent | _] -> Enum.sort(episodes, &(DateTime.compare(&1.updated_at, &2.updated_at)))
         {:ok, date} = rfc_2822_date(most_recent.updated_at)
         date
       [] -> nil

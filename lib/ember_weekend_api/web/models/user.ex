@@ -9,7 +9,7 @@ defmodule EmberWeekendApi.Web.User do
     has_many :linked_accounts, LinkedAccount
     has_many :sessions, Session
 
-    timestamps()
+    timestamps([type: :utc_datetime_usec])
   end
 
   @required_fields ~w(name username)a

@@ -15,7 +15,7 @@ defmodule EmberWeekendApi.Web.Person do
     has_many :resource_authors, ResourceAuthor, foreign_key: :author_id
     has_many :resources, through: [:resource_authors, :resource]
 
-    timestamps()
+    timestamps([type: :utc_datetime_usec])
   end
 
   @required_fields ~w(name url)a

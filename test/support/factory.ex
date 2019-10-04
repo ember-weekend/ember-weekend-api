@@ -4,9 +4,6 @@ defmodule EmberWeekendApi.Factory do
 
   def episode_factory do
     title = Faker.Lorem.words(%Range{first: 1, last: 8})
-    today = Timex.now
-    unix = Timex.to_unix(today)
-    release_date = Timex.from_unix(:rand.uniform(unix))
 
     %Episode{
       number: sequence("number", &(&1)),
@@ -14,7 +11,7 @@ defmodule EmberWeekendApi.Factory do
       title: Enum.join(title, " "),
       description: Faker.Lorem.sentence(20),
       slug: Enum.join(title, "-"),
-      release_date: release_date,
+      release_date: Date.utc_today,
       filename: Enum.join(Enum.concat(title, [".mp3"]), "-"),
       duration: sequence("duration", &"00:#{&1}")
     }

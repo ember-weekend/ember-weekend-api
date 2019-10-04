@@ -17,9 +17,7 @@ defmodule EmberWeekendApi.Mixfile do
   #
   # Type `mix help compile.app` for more information.
   def application do
-    [mod: {EmberWeekendApi, []},
-     applications: [:phoenix, :phoenix_html, :cowboy, :logger, :gettext,
-                    :phoenix_ecto, :postgrex, :httpoison, :timex, :timex_ecto, :tzdata]]
+    [mod: {EmberWeekendApi, []}]
   end
 
   # Specifies which paths to compile per environment.
@@ -31,8 +29,10 @@ defmodule EmberWeekendApi.Mixfile do
   # Type `mix help deps` for examples and options.
   defp deps do
     [{:phoenix, "~> 1.3.0-rc.1"},
-     {:postgrex, ">= 0.13.0"},
-     {:phoenix_ecto, "~> 3.0"},
+     {:postgrex, ">= 0.15.0"},
+     {:phoenix_ecto, "~> 4.0"},
+     {:ecto_sql, "~> 3.0"},
+     {:plug_cowboy, "~> 1.0"},
      {:phoenix_html, "~> 2.9"},
      {:phoenix_live_reload, "~> 1.0", only: :dev},
      {:gettext, "~> 0.9"},
@@ -41,10 +41,9 @@ defmodule EmberWeekendApi.Mixfile do
      {:secure_random, "~>0.2"},
      {:json, "~> 0.3.0"},
      {:timex, "~> 3.1"},
-     {:timex_ecto, "~> 3.1"},
      {:corsica, "~> 0.4"},
      {:feeder_ex, "~> 1.0.1"},
-     {:ex_machina, "~> 2.0", only: :test},
+     {:ex_machina, "~> 2.3.0", only: :test},
      {:faker, "~> 0.7", only: :test},
      {:ja_serializer, "~> 0.12.0"}]
   end

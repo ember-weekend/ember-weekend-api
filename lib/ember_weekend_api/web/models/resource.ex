@@ -10,7 +10,7 @@ defmodule EmberWeekendApi.Web.Resource do
     has_many :authors, through: [:resource_authors, :author]
     has_many :show_notes, ShowNote
 
-    timestamps()
+    timestamps([type: :utc_datetime_usec])
   end
 
   @required_fields ~w(title url)a

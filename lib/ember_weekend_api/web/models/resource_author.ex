@@ -5,7 +5,7 @@ defmodule EmberWeekendApi.Web.ResourceAuthor do
     belongs_to :author, EmberWeekendApi.Web.Person
     belongs_to :resource, EmberWeekendApi.Web.Resource
 
-    timestamps()
+    timestamps([type: :utc_datetime_usec])
   end
 
   @required_fields ~w(author_id resource_id)a

@@ -8,7 +8,7 @@ defmodule EmberWeekendApi.Seeder do
       title: "Pilot",
       description: "Rick moves in with his daughter's family and becomes a bad influence on his grandson, Morty.",
       slug: "pilot",
-      release_date: Timex.to_date({2013, 12, 2}),
+      release_date: ~D[2013-12-02],
       filename: "s01e01",
       duration: "1:00:00"
     },
@@ -17,7 +17,7 @@ defmodule EmberWeekendApi.Seeder do
       title: "Lawnmower Dog",
       description: "Rick helps Jerry with the dog and incept Goldenfold.",
       slug: "lawnmower-dog",
-      release_date: Timex.to_date({2013, 12, 9}),
+      release_date: ~D[2013-12-09],
       filename: "s01e02",
       duration: "1:00:00"
     },
@@ -26,7 +26,7 @@ defmodule EmberWeekendApi.Seeder do
       title: "Anatomy Park",
       description: "Rick and Morty try to save the life of a homeless man; Jerry's parents visit.",
       slug: "anatomy-park",
-      release_date: Timex.to_date({2013, 12, 15}),
+      release_date: ~D[2013-12-15],
       filename: "s01e03",
       duration: "1:00:00"
     }],

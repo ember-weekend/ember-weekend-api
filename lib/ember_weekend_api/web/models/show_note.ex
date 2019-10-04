@@ -7,7 +7,7 @@ defmodule EmberWeekendApi.Web.ShowNote do
     belongs_to :resource, EmberWeekendApi.Web.Resource
     belongs_to :episode, EmberWeekendApi.Web.Episode
 
-    timestamps()
+    timestamps([type: :utc_datetime_usec])
   end
 
   @required_fields ~w(time_stamp episode_id)a

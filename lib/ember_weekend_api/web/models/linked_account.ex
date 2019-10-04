@@ -8,7 +8,7 @@ defmodule EmberWeekendApi.Web.LinkedAccount do
     field :provider_id, :string
     belongs_to :user, EmberWeekendApi.Web.User
 
-    timestamps()
+    timestamps([type: :utc_datetime_usec])
   end
 
   @required_fields ~w(provider access_token provider_id user_id username)a

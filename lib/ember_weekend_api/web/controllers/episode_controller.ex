@@ -91,7 +91,7 @@ defmodule EmberWeekendApi.Web.EpisodeController do
 
         multi = Multi.new
         |> Multi.update(:episode, changeset)
-        |> Multi.run(:set_episode_guests, fn(%{episode: episode}) ->
+        |> Multi.run(:set_episode_guests, fn(_, %{episode: episode}) ->
           set_episode_guests(%{episode: episode, guest_ids: guest_ids })
         end)
 

@@ -5,7 +5,7 @@ defmodule EmberWeekendApi.Web.EpisodeGuest do
     belongs_to :episode, EmberWeekendApi.Web.Episode
     belongs_to :guest, EmberWeekendApi.Web.Person
 
-    timestamps()
+    timestamps([type: :utc_datetime_usec])
   end
 
   @required_fields ~w(episode_id guest_id)a

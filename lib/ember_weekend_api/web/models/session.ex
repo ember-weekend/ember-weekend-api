@@ -5,7 +5,7 @@ defmodule EmberWeekendApi.Web.Session do
     field :token, :string
     belongs_to :user, EmberWeekendApi.Web.User
 
-    timestamps()
+    timestamps([type: :utc_datetime_usec])
   end
 
   @required_fields ~w(token user_id)a

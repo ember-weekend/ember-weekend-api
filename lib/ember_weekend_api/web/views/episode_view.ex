@@ -10,9 +10,8 @@ defmodule EmberWeekendApi.Web.EpisodeView do
   def type, do: "episodes"
 
   def release_date(episode, _conn) do
-    {:ok, date} = episode.release_date
-      |> Timex.Format.DateTime.Formatter.format("%Y-%m-%d", :strftime)
-    date
+    date = episode.release_date
+    Enum.join [date.year, date.month, date.day], "-"
   end
 
   def show_notes(model, _conn) do

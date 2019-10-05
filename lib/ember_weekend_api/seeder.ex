@@ -10,7 +10,8 @@ defmodule EmberWeekendApi.Seeder do
       slug: "pilot",
       release_date: ~D[2013-12-02],
       filename: "s01e01",
-      duration: "1:00:00"
+      duration: "1:00:00",
+      published: true
     },
     %{
       number: 2,
@@ -19,7 +20,8 @@ defmodule EmberWeekendApi.Seeder do
       slug: "lawnmower-dog",
       release_date: ~D[2013-12-09],
       filename: "s01e02",
-      duration: "1:00:00"
+      duration: "1:00:00",
+      published: true
     },
     %{
       number: 3,

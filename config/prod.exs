@@ -9,7 +9,8 @@ config :ember_weekend_api, EmberWeekendApi.Web.Endpoint,
 config :ember_weekend_api, EmberWeekendApi.Repo,
   adapter: Ecto.Adapters.Postgres,
   url: Map.fetch!(System.get_env(), "DATABASE_URL"),
-  pool_size: String.to_integer(System.get_env("POOL_SIZE") || "10")
+  pool_size: String.to_integer(System.get_env("POOL_SIZE") || "10"),
+  ssl: true
 
 config :logger, level: :info
 

@@ -29,7 +29,7 @@ defmodule EmberWeekendApi.Mixfile do
   # Type `mix help deps` for examples and options.
   defp deps do
     [{:phoenix, "~> 1.3.0-rc.1"},
-     {:postgrex, ">= 0.15.0"},
+     {:postgrex, ">= 0.15.8"},
      {:phoenix_ecto, "~> 4.0"},
      {:ecto_sql, "~> 3.0"},
      {:plug_cowboy, "~> 1.0"},
